@@ -72,21 +72,23 @@ pushd "$wORKING_DIR" &>/dev/null
     pushd plugins/enabled &>/dev/null
       for D in *; do
         if [ -d "${D}" ]; then
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy plugin '$D' ...$COLOR_END"
-          echo -e
+          pushd "$D" &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy plugin '$D' ...$COLOR_END"
+            echo -e
 
-          npm install
+            npm install
 
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy common objects '$PROXY_COMMON_OBJECT_VERSION' for plugin '$D'...$COLOR_END"
-          echo -e
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy common objects '$PROXY_COMMON_OBJECT_VERSION' for plugin '$D'...$COLOR_END"
+            echo -e
 
-          npm uninstall kuzzle-common-object
-          npm install "$PROXY_COMMON_OBJECT_VERSION"
+            npm uninstall kuzzle-common-object
+            npm install "$PROXY_COMMON_OBJECT_VERSION"
+          popd &>/dev/null
         fi
       done
-    popd
+    popd &>/dev/null
 
     pm2 start --silent ./docker-compose/config/pm2.json
 
@@ -120,21 +122,23 @@ pushd "$wORKING_DIR" &>/dev/null
     pushd plugins/enabled &>/dev/null
       for D in *; do
         if [ -d "${D}" ]; then
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle plugin '$D' ...$COLOR_END"
-          echo -e
+          pushd "$D" &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle plugin '$D' ...$COLOR_END"
+            echo -e
 
-          npm install
+            npm install
 
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle common objects '$PROXY_COMMON_OBJECT_VERSION' for plugin '$D'...$COLOR_END"
-          echo -e
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle common objects '$PROXY_COMMON_OBJECT_VERSION' for plugin '$D'...$COLOR_END"
+            echo -e
 
-          npm uninstall kuzzle-common-object
-          npm install "$PROXY_COMMON_OBJECT_VERSION"
+            npm uninstall kuzzle-common-object
+            npm install "$PROXY_COMMON_OBJECT_VERSION"
+          popd &>/dev/null
         fi
       done
-    popd
+    popd &>/dev/null
 
     pm2 start --silent ./docker-compose/config/pm2.json
 
