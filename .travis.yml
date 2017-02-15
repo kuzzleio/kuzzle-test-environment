@@ -19,7 +19,14 @@ services:
 before_script:
   - sleep 15
 
-script: ./scripts/install.sh && ./scripts/run.sh
+script: travis_retry ./scripts/install.sh && ./scripts/run.sh
+
+os: linux
+
+matrix:
+  include:
+  - dist: trusty
+  - dist: precise
 
 env:
   - KUZZLE_REPO: kuzzleio/kuzzle
