@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-wORKING_DIR='/home/node'
-ELASTIC_HOST=${kuzzle_services__db__host:-elasticsearch}
+ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
 
 
@@ -47,7 +46,7 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...$COLOR_END"
 echo -e
 
-pushd "$wORKING_DIR" &>/dev/null
+pushd "$HOME" &>/dev/null
 
   echo -e
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}Install kuzzle proxy '$PROXY_VERSION' ...$COLOR_END"

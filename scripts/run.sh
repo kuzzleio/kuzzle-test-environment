@@ -1,10 +1,8 @@
 #!/bin/bash
 
-wORKING_DIR='/home/node'
-
 echo "=> run"
 
-pushd "$wORKING_DIR" &>/dev/null
+pushd "$HOME" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
   npm run test
   popd &>/dev/null
