@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  sandbox:
+    image: node:6
+    command: /bin/bash -c '/scripts/install.sh && /scripts/run.sh'
+    env_file:
+      - ./common.env
+    volumes:
+      - "./scripts:/scripts"
+      - "./logs:/root/.pm2/logs/"
+      - "./.cache/npm:/root/.npm"
+    depends_on:
+      - redis
+      - elasticsearch
+    environment:
+      - kuzzle_services__db__host=elasticsearch
+      - kuzzle_services__internalCache__node__host=redis
+      - kuzzle_services__memoryStorage__node__host=redis
+      - NODE_ENV=development
+      - DEBUG=kuzzle-proxy:*,kuzzle:*
+
+  redis:
+    image: redis:3.2
+
+  elasticsearch:
+    image: elasticsearch:5.0
