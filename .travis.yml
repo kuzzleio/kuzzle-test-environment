@@ -2,6 +2,16 @@ language: node_js
 node_js:
 - '6'
 
+addons:
+  apt:
+    packages:
+      - build-essential
+      - curl
+      - git
+      - g++
+      - gdb
+      - python
+
 services:
   - elasticsearch
   - redis-server
