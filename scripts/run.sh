@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
