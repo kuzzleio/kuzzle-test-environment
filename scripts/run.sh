@@ -33,6 +33,9 @@ gcc --version
 echo -e "-> ${COLOR_BLUE}build env:$COLOR_END"
 printenv
 
+echo -e "-> ${COLOR_BLUE}elasticsearch version:$COLOR_END"
+curl -XGET http://localhost:9200 
+
 pushd "/tmp/sandbox" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
     echo -e
