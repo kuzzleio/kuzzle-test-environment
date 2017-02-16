@@ -54,6 +54,7 @@ echo $PATH
 
 npm cache clean --force
 npm install npm -g
+npm config set prefix '/tmp/.npm-global'
 
 npm set progress=false
 
