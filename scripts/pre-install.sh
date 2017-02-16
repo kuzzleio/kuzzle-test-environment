@@ -11,5 +11,5 @@ ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 command -v docker || (curl -fsSL https://get.docker.com/ | sh)
 
-docker run -d --name elasticsearch:"${ES_VERSION}" -p 9200:9200 elasticsearch
-docker run -d --name redis:"${REDIS_VERSION}" -p 6379:6379 redis
+docker run --detach --name elasticsearch --publish 9200:9200 elasticsearch:"${ES_VERSION:-latest}"
+docker run --detach --name redis --publish 6379:6379 redis:"${REDIS_VERSION:-latest}"
