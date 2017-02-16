@@ -36,6 +36,9 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install dependencies...$COLOR_END"
 echo -e
 
+which node
+node --version
+
 npm cache clean --force
 npm install npm -g
 

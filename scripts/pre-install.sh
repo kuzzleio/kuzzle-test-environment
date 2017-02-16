@@ -10,3 +10,4 @@ rm "node-v$NODE_VERSION-linux-x64.tar.gz"
 ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 which node
+node --version
