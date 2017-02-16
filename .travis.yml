@@ -1,7 +1,5 @@
 services:
-  - elasticsearch
-  - redis-server
-
+  - docker
 
 addons:
   apt:
