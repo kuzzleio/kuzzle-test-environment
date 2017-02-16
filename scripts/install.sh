@@ -38,6 +38,9 @@ echo -e
 
 which node
 node --version
+nvm ls
+nvm ls-remote
+nvm deactivate
 
 npm cache clean --force
 npm install npm -g
