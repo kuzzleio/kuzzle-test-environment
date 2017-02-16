@@ -26,6 +26,9 @@ python --version
 echo -e "-> ${COLOR_BLUE}gcc version:$COLOR_END"
 gcc --version
 
+echo -e "-> ${COLOR_BLUE}build env:$COLOR_END"
+printenv
+
 pushd "/tmp/sandbox" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
     echo -e
