@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
