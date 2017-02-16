@@ -32,13 +32,17 @@ echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting environment instal
 
 
 
-
-
 echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install dependencies...$COLOR_END"
 echo -e
 
-npm install -g pm2
+npm cache clean --force
+npm install npm -g
+
+npm set progress=false
+
+npm uninstall -g pm2 || true
+npm install -g pm2@${GLOBAL_PM2_VERSION}
 
 pm2 flush
 
@@ -46,7 +50,11 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...$COLOR_END"
 echo -e
 
-pushd "$HOME" &>/dev/null
+if [ ! -d "/tmp/sandbox" ]; then
+  mkdir -p "/tmp/sandbox"
+fi
+
+pushd "/tmp/sandbox" &>/dev/null
 
   echo -e
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}Install kuzzle proxy '$PROXY_VERSION' ...$COLOR_END"
@@ -56,7 +64,7 @@ pushd "$HOME" &>/dev/null
     rm -rf ./kuzzle-proxy
   fi
 
-  git clone --recursive https://github.com/"$PROXY_REPO".git -b "$PROXY_VERSION"
+  git clone --recursive "http://github.com/${PROXY_REPO}.git" -b "$PROXY_VERSION"
 
   pushd kuzzle-proxy &>/dev/null
     npm install

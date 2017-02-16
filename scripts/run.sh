@@ -11,12 +11,28 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Runing tests...$COLOR_END"
 echo -e
 
-pushd "$HOME" &>/dev/null
+pushd "/tmp/sandbox" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
-  npm run test
+    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}Runing kuzzle-proxy tests...$COLOR_END"
+    echo -e
+
+    npm run test
+
+    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}kuzzle-proxy tests ok !$COLOR_END"
+    echo -e
   popd &>/dev/null
 
   pushd kuzzle &>/dev/null
-  npm run test
+    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}Runing kuzzle tests...$COLOR_END"
+    echo -e
+
+    npm run test
+
+    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_LBLUE}kuzzle tests ok !$COLOR_END"
+    echo -e
   popd &>/dev/null
 popd &>/dev/null

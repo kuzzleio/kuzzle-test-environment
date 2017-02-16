@@ -2,14 +2,12 @@ version: '2'
 
 services:
   sandbox:
-    image: node:6
-    command: /bin/bash -c '/scripts/install.sh && /scripts/run.sh'
+    image: debian:jessie
+    command: /bin/bash -c '/scripts/pre-install.sh && /scripts/install.sh && /scripts/run.sh'
     env_file:
       - ./common.env
     volumes:
       - "./scripts:/scripts"
-      - "./logs:/root/.pm2/logs/"
-      - "./.cache/npm:/root/.npm"
     depends_on:
       - redis
       - elasticsearch
@@ -17,11 +15,13 @@ services:
       - kuzzle_services__db__host=elasticsearch
       - kuzzle_services__internalCache__node__host=redis
       - kuzzle_services__memoryStorage__node__host=redis
-      - NODE_ENV=development
-      - DEBUG=kuzzle-proxy:*,kuzzle:*
 
   redis:
     image: redis:3.2
+    ports:
+      - 6379:6379
 
   elasticsearch:
     image: elasticsearch:5.0
+    ports:
+      - 9200:9200
