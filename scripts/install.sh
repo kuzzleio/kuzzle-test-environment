@@ -3,19 +3,17 @@ set -e
 
 ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
+
 if [[ $TRAVIS -eq "true" ]]; then
-  echo "travis"
+  PATH="/tmp/.npm-global/bin:/home/travis/.rvm/gems/ruby-2.2.5/bin:/home/travis/.rvm/gems/ruby-2.2.5@global/bin:/home/travis/.rvm/rubies/ruby-2.2.5/bin:/home/travis/.rvm/bin:/home/travis/bin:/home/travis/.local/bin:/home/travis/.gimme/versions/go1.4.2.linux.amd64/bin:/usr/local/phantomjs/bin:./node_modules/.bin:/usr/local/maven-3.2.5/bin:/usr/local/clang-3.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin"
 fi
 
-PATH="/tmp/.npm-global/bin:/home/travis/.rvm/gems/ruby-2.2.5/bin:/home/travis/.rvm/gems/ruby-2.2.5@global/bin:/home/travis/.rvm/rubies/ruby-2.2.5/bin:/home/travis/.rvm/bin:/home/travis/bin:/home/travis/.local/bin:/home/travis/.gimme/versions/go1.4.2.linux.amd64/bin:/usr/local/phantomjs/bin:./node_modules/.bin:/usr/local/maven-3.2.5/bin:/usr/local/clang-3.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin"
-NPM_CONFIG_PREFIX=/tmp/.npm-global
-
-npm config set prefix '/tmp/.npm-global'
 
 if [ -d "/tmp/.npm-global" ]; then
   rm -rf "/tmp/.npm-global"
 fi
 mkdir "/tmp/.npm-global"
+npm config set prefix '/tmp/.npm-global'
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
@@ -48,15 +46,10 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install dependencies...$COLOR_END"
 echo -e
 
-which node
-node --version
-echo $PATH
-
 npm cache clean --force
-npm install npm -g
-npm config set prefix '/tmp/.npm-global'
 
 npm set progress=false
+npm config set strict-ssl false
 
 npm uninstall -g pm2 || true
 npm install -g pm2@${GLOBAL_PM2_VERSION}
