@@ -2,11 +2,16 @@ services:
   - elasticsearch
   - redis-server
 
-before_script:
-  - sleep 15
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
 
 before_install: sudo ./scripts/pre-install.sh
 install: travis_retry ./scripts/install.sh
+
+before_script: sleep 15
 script: ./scripts/run.sh
 
 os: linux
