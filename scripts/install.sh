@@ -2,8 +2,8 @@
 
 ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
-export CC="gcc-4.9"
-export CXX="g++-4.9"
+export CC="gcc-$GCC_VERSION"
+export CXX="g++-$GCC_VERSION"
 
 if [[ $TRAVIS -eq "true" ]]; then
   export PATH="/tmp/.npm-global/bin:/home/travis/.rvm/gems/ruby-2.2.5/bin:/home/travis/.rvm/gems/ruby-2.2.5@global/bin:/home/travis/.rvm/rubies/ruby-2.2.5/bin:/home/travis/.rvm/bin:/home/travis/bin:/home/travis/.local/bin:/home/travis/.gimme/versions/go1.4.2.linux.amd64/bin:/usr/local/phantomjs/bin:./node_modules/.bin:/usr/local/maven-3.2.5/bin:/usr/local/clang-3.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin"
@@ -57,20 +57,20 @@ npm install -g pm2@${GLOBAL_PM2_VERSION} node-gyp
 
 pm2 flush
 
-echo "-> ${COLOR_BLUE}node version:$COLOR_END"
+echo -e "-> ${COLOR_BLUE}node version:$COLOR_END"
 node --version
 
-echo "-> ${COLOR_BLUE}npm version:$COLOR_END"
+echo -e "-> ${COLOR_BLUE}npm version:$COLOR_END"
 npm --version
 
-echo "-> ${COLOR_BLUE}pm2 version:$COLOR_END"
+echo -e "-> ${COLOR_BLUE}pm2 version:$COLOR_END"
 pm2 --version
 
-echo "-> ${COLOR_BLUE}python version:$COLOR_END"
-python --versiong
+echo -e "-> ${COLOR_BLUE}python version:$COLOR_END"
+python --version
 
-echo "-> ${COLOR_BLUE}gcc version:$COLOR_END"
-gcc --versiong
+echo -e "-> ${COLOR_BLUE}gcc version:$COLOR_END"
+gcc --version
 
 echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...$COLOR_END"

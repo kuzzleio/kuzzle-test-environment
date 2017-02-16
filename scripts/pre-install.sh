@@ -2,7 +2,7 @@
 set -ex
 
 apt-get update
-apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-4.9 g++-4.9 gdb python openssl
+apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl
 
 curl -kO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz"
 tar -xvf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1

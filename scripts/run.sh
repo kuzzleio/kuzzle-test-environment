@@ -11,6 +11,21 @@ echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Runing tests...$COLOR_END"
 echo -e
 
+echo -e "-> ${COLOR_BLUE}node version:$COLOR_END"
+node --version
+
+echo -e "-> ${COLOR_BLUE}npm version:$COLOR_END"
+npm --version
+
+echo -e "-> ${COLOR_BLUE}pm2 version:$COLOR_END"
+pm2 --version
+
+echo -e "-> ${COLOR_BLUE}python version:$COLOR_END"
+python --version
+
+echo -e "-> ${COLOR_BLUE}gcc version:$COLOR_END"
+gcc --version
+
 pushd "/tmp/sandbox" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
     echo -e
