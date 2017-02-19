@@ -6,15 +6,19 @@ services:
     command: /bin/bash -c '/scripts/pre-install.sh && /scripts/install.sh && /scripts/run.sh'
     env_file:
       - ./common.env
+      - ./private.env
     volumes:
       - "./scripts:/scripts"
     depends_on:
       - redis
       - elasticsearch
+    ports:
+      - 7331:7331
     environment:
       - kuzzle_services__db__host=elasticsearch
       - kuzzle_services__internalCache__node__host=redis
       - kuzzle_services__memoryStorage__node__host=redis
+      - kuzzle_plugins__kuzzle-plugin-cluster__privileged=true
 
   redis:
     image: redis:3

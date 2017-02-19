@@ -18,45 +18,9 @@ os: linux
 sudo: required
 
 env:
-  # RC9 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # RC9.1 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9.1
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # RC9.2 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9.2
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # latest version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: master
-    KUZZLE_KEEP_DEFAULT_PLUGIN: true
-    KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: master
-    PROXY_KEEP_DEFAULT_PLUGIN: true
-    PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
+  global:
+    secure: "UnbsNlpPLUhxS3YrTsO2grh8m4kBi9vIs/JzacdfQnDFhvuEdpS+k3JuLen9rMFDzIiqXAhTCSFoAeDuT7xVewY/ulxaO6/BgKB5m3xxSZbtWZWq6n95KkL8o6/8qJnvVzqqQA4mV3sa5gLSMjkP6Ds61BxFmO7L3IAKwkUgZFzi/OlGFW5Hl7u1ToBktQ80Eb+NaxrWigtUbnDbyldFCJse5WGBB+7BUt9vf7n7zdcW5F0t3f3dbrQBJL3We1wuPKeN7gAqM5x0uoH1aZeBSi62rJUxlbP3/zqDIaCa187w7zjPBYgMS6n7rxTO6ylgJyqw6SM6/OnP0itPxu/Io+pa7WTV7emalLZWzHlRYVvOaNvs+eRYhuBMmHKKiLUmPyURYL0YVrCRNlGJUOCUVYBluCzlxCXlZsXm1j/3z6rgDwhfXhlL2QM2tgGw9Ee5j1gM0Sh55mLo/677P/07XLSQ3dxL4ezAbiIEv1m/Y850EL5FXlVb8mHslrmWblhcd4II+oVnKPpZKLstRoaU5OFFMZPK9GYZvnUSCx/7oqzD9Gy0eBtz7mAxa74ONhvEeBjCnbEtKw0wJJMN8MizO4SZs/MqfiSZwnabMyQikR/BVFpu4FHQaiz6ceBWvN5dZ9j7ztJsHHsKlNxyQ6kIwEE4xQ14+Q3SgWzD4DygrWo="
+    kuzzle_plugins__kuzzle-plugin-cluster__privileged: true
     NODE_VERSION: 6.9.5
     GLOBAL_PM2_VERSION: 2.0.19
     GCC_VERSION: 4.9
@@ -65,14 +29,9 @@ env:
   # development version
   - KUZZLE_REPO: kuzzleio/kuzzle
     KUZZLE_VERSION: rc.x
-    KUZZLE_KEEP_DEFAULT_PLUGIN: true
     KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
+    KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth#master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger:kuzzleio/kuzzle-plugin-cluster
     PROXY_REPO: kuzzleio/kuzzle-proxy
     PROXY_VERSION: rc.x
-    PROXY_KEEP_DEFAULT_PLUGIN: true
     PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
+    PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt
