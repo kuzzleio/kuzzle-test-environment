@@ -4,10 +4,8 @@ The main purpose of this repository is to test the stability of a [kuzzle](http:
 
 Tests can be run either in a local development environment or on a continuous integration flow
 
-<a name="how-to-run-tests-in-local-development-environment" />
 ## local development environment
 
-<a name="how-to-run-tests-in-local-development-environment-configuration" />
 ### configuration
 
 ```bash
@@ -49,7 +47,6 @@ edit this file to configure your github token if you want to access private repo
 
 <br />
 
-<a name="how-to-run-tests-in-local-development-environment-run-sandbox" />
 ### run sandbox
 
 ```bash
@@ -64,10 +61,8 @@ docker-compose up sandbox
 
 <br />
 
-<a name="how-to-run-tests-in-continuous-integration-flow" />
 ## continuous integration flow
 
-<a name="how-to-run-tests-in-continuous-integration-configuration" />
 ### configuration
 
 
@@ -95,14 +90,12 @@ env:
 you can add as many as configuration as you need under `env.matrix` dictionary, *see [environment reference](#environment-reference)*
 
 
-<a name="how-to-run-tests-in-continuous-integration-schedule-execution" />
 ### schedule execution
 
 - **master** branch is scheduled to be executed on **each week**, it's configuration should contains all stables versions
 
 - **develop** branch is scheduled to be executed on **each day**, it's configuration should contains the main development configuration, and may contains **pre-release configurations**
 
-<a name="environment-reference" />
 ## environment reference
 | Variable | Default | Description |
 | ---- | --- | --- |
@@ -123,7 +116,6 @@ you can add as many as configuration as you need under `env.matrix` dictionary, 
 | GCC_VERSION | 4.9 | define gcc version |
 | GLOBAL_PM2_VERSION | *(optional)* <br /> 2.0.19 | override global pm2 version |
 
-<a name="enhancements" />
 ## enhancements
 - [ ] configure extra optional tests
 - [ ] integrate kuzzle backoffice end-to-end tests
