@@ -18,17 +18,19 @@ os: linux
 sudo: required
 
 env:
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: rc.x
-    KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
-    KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth#master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger:kuzzleio/kuzzle-plugin-cluster
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: rc.x
-    PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
-    PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt
-    "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
+  global:
+    - NODE_VERSION: 6.9.5
+    - GLOBAL_PM2_VERSION: 2.0.19
+    - GCC_VERSION: 4.9
+    - ES_VERSION: 5
+    - REDIS_VERSION: 3
+  matrix:
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: rc.x
+      KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
+      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth#master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger:kuzzleio/kuzzle-plugin-cluster
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: rc.x
+      PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
+      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt
+      "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
