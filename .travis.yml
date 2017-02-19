@@ -18,47 +18,41 @@ os: linux
 sudo: required
 
 env:
-  # RC9 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # RC9.1 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9.1
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # RC9.2 version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: 1.0.0-RC9.2
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: 1.0.0-RC9
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
-  # latest version
-  - KUZZLE_REPO: kuzzleio/kuzzle
-    KUZZLE_VERSION: master
-    KUZZLE_KEEP_DEFAULT_PLUGIN: true
-    KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
-    PROXY_REPO: kuzzleio/kuzzle-proxy
-    PROXY_VERSION: master
-    PROXY_KEEP_DEFAULT_PLUGIN: true
-    PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
-    NODE_VERSION: 6.9.5
-    GLOBAL_PM2_VERSION: 2.0.19
-    GCC_VERSION: 4.9
-    ES_VERSION: 5
-    REDIS_VERSION: 3
+  global:
+    - NODE_VERSION: 6.9.5
+    - GLOBAL_PM2_VERSION: 2.0.19
+    - GCC_VERSION: 4.9
+    - ES_VERSION: 5
+    - REDIS_VERSION: 3
+  matrix:
+    # RC9 version
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: 1.0.0-RC9
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: 1.0.0-RC9
+    # RC9.1 version
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: 1.0.0-RC9.1
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: 1.0.0-RC9
+    # RC9.2 version
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: 1.0.0-RC9.2
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: 1.0.0-RC9
+    # RC9.2 entreprise version
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: 1.0.0-RC9.2
+      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local#2.0.2:kuzzleio/kuzzle-plugin-logger#1.0.6:kuzzleio/kuzzle-plugin-cluster#1.0.0
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: 1.0.0-RC9
+      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt#2.0.1
+      "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
+    # latest version
+    - KUZZLE_REPO: kuzzleio/kuzzle
+      KUZZLE_VERSION: master
+      KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
+      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger
+      PROXY_REPO: kuzzleio/kuzzle-proxy
+      PROXY_VERSION: master
+      PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
