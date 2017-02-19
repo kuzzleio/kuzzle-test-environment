@@ -89,12 +89,15 @@ env:
 > **.travis.yml** <br />
 you can add as many as configuration as you need under `env.matrix` dictionary, *see [environment reference](#environment-reference)*
 
+<br />
 
 ### schedule execution
 
 - **master** branch is scheduled to be executed on **each week**, it's configuration should contains all stables versions
 
 - **develop** branch is scheduled to be executed on **each day**, it's configuration should contains the main development configuration, and may contains **pre-release configurations**
+
+<br />
 
 ## environment reference
 | Variable | Default | Description |
@@ -115,6 +118,8 @@ you can add as many as configuration as you need under `env.matrix` dictionary, 
 | NODE_VERSION | 6.9.5 | define nodejs version |
 | GCC_VERSION | 4.9 | define gcc version |
 | GLOBAL_PM2_VERSION | *(optional)* <br /> 2.0.19 | override global pm2 version |
+
+<br />
 
 ## enhancements
 - [ ] configure extra optional tests
