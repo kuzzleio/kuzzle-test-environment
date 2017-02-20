@@ -43,7 +43,7 @@ env:
     # RC9.2 entreprise version
     - KUZZLE_REPO: kuzzleio/kuzzle
       KUZZLE_VERSION: 1.0.0-RC9.2
-      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local#2.0.2:kuzzleio/kuzzle-plugin-logger#1.0.6:kuzzleio/kuzzle-plugin-cluster#1.0.0
+      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local#3.0.4:kuzzleio/kuzzle-plugin-logger#3.0.0:kuzzleio/kuzzle-plugin-cluster#1.0.0
       PROXY_REPO: kuzzleio/kuzzle-proxy
       PROXY_VERSION: 1.0.0-RC9
       PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt#2.0.1
