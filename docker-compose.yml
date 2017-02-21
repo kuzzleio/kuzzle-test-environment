@@ -18,6 +18,7 @@ services:
       - kuzzle_services__db__host=elasticsearch
       - kuzzle_services__internalCache__node__host=redis
       - kuzzle_services__memoryStorage__node__host=redis
+      - proxy_backend__mode=round-robin
       - kuzzle_plugins__kuzzle-plugin-cluster__privileged=true
 
   redis:
