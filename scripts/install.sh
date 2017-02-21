@@ -110,54 +110,65 @@ pushd "/tmp/sandbox" &>/dev/null
 
     if [[ "${PROXY_COMMON_OBJECT_VERSION}" != "" ]]; then
       echo -e
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy common objects '${PROXY_COMMON_OBJECT_VERSION}' ...${COLOR_END}"
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override proxy common objects '${PROXY_COMMON_OBJECT_VERSION}' ...${COLOR_END}"
       echo -e
 
       npm uninstall kuzzle-common-object || true
       npm install "${PROXY_COMMON_OBJECT_VERSION}"
     fi
 
-    if [ -d "plugins/enabled" ]; then
-      pushd plugins/enabled &>/dev/null
+    if [[ "${LB_PROXY_VERSION}" != "" ]]; then
+      echo -e
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override load balancer proxy version '${LB_PROXY_VERSION}' ...${COLOR_END}"
+      echo -e
 
-        if [[ "${PROXY_PLUGINS}" != "" ]]; then
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle proxy plugin list overrided${COLOR_END}"
+      npm uninstall kuzzle-proxy || true
+      npm install "${LB_PROXY_VERSION}"
+    fi
 
-          rm -rf ./*
+    if [ ! -d "plugins/enabled" ]; then
+      mkdir -p "plugins/enabled"
+    fi
 
-          set -f
+    pushd plugins/enabled &>/dev/null
 
-          PLUGINS=(${PROXY_PLUGINS//:/ })
+      if [[ "${PROXY_PLUGINS}" != "" ]]; then
+        echo -e
+        echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle proxy plugin list overrided${COLOR_END}"
 
-          for i in "${!PLUGINS[@]}"; do
-            if [[ "${PLUGINS[i]}" != "" ]]; then
-              PLUGIN_INFO=(${PLUGINS[i]//#/ })
+        rm -rf ./*
 
-              echo -e
-              echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading proxy plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
-              echo -e
-              git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
-            fi
-          done
+        set -f
 
-          set +f
-        fi
+        PLUGINS=(${PROXY_PLUGINS//:/ })
 
-        for PLUGIN in *; do
-          if [ -d "${PLUGIN}" ]; then
-            pushd "${PLUGIN}" &>/dev/null
-              echo -e
-              echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy plugin '${PLUGIN}' ...${COLOR_END}"
-              echo -e
+        for i in "${!PLUGINS[@]}"; do
+          if [[ "${PLUGINS[i]}" != "" ]]; then
+            PLUGIN_INFO=(${PLUGINS[i]//#/ })
 
-              npm install
-
-            popd &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading proxy plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
+            echo -e
+            git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
           fi
         done
-      popd &>/dev/null
-    fi
+
+        set +f
+      fi
+
+      for PLUGIN in *; do
+        if [ -d "${PLUGIN}" ]; then
+          pushd "${PLUGIN}" &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy plugin '${PLUGIN}' ...${COLOR_END}"
+            echo -e
+
+            npm install
+
+          popd &>/dev/null
+        fi
+      done
+    popd &>/dev/null
 
     pm2 start --silent ./docker-compose/config/pm2.json
 
@@ -199,46 +210,49 @@ pushd "/tmp/sandbox" &>/dev/null
       npm install "${KUZZLE_COMMON_OBJECT_VERSION}"
     fi
 
-    if [ -d "plugins/enabled" ]; then
-      pushd plugins/enabled &>/dev/null
 
-        if [[ "${KUZZLE_PLUGINS}" != "" ]]; then
-          echo -e
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle plugin list overrided${COLOR_END}"
+    if [ ! -d "plugins/enabled" ]; then
+      mkdir -p "plugins/enabled"
+    fi
 
-          rm -rf ./*
+    pushd plugins/enabled &>/dev/null
 
-          set -f
+      if [[ "${KUZZLE_PLUGINS}" != "" ]]; then
+        echo -e
+        echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle plugin list overrided${COLOR_END}"
 
-          PLUGINS=(${KUZZLE_PLUGINS//:/ })
+        rm -rf ./*
 
-          for i in "${!PLUGINS[@]}"; do
-            if [[ "${PLUGINS[i]}" != "" ]]; then
-              PLUGIN_INFO=(${PLUGINS[i]//#/ })
+        set -f
 
-              echo -e
-              echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
-              echo -e
-              git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
-            fi
-          done
+        PLUGINS=(${KUZZLE_PLUGINS//:/ })
 
-          set +f
-        fi
+        for i in "${!PLUGINS[@]}"; do
+          if [[ "${PLUGINS[i]}" != "" ]]; then
+            PLUGIN_INFO=(${PLUGINS[i]//#/ })
 
-        for PLUGIN in *; do
-          if [ -d "${PLUGIN}" ]; then
-            pushd "${PLUGIN}" &>/dev/null
-              echo -e
-              echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle plugin '${PLUGIN}' ...${COLOR_END}"
-              echo -e
-
-              npm install
-            popd &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
+            echo -e
+            git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
           fi
         done
-      popd &>/dev/null
-    fi
+
+        set +f
+      fi
+
+      for PLUGIN in ./*; do
+        if [ -d "${PLUGIN}" ]; then
+          pushd "${PLUGIN}" &>/dev/null
+            echo -e
+            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle plugin '${PLUGIN}' ...${COLOR_END}"
+            echo -e
+
+            npm install
+          popd &>/dev/null
+        fi
+      done
+    popd &>/dev/null
 
     pm2 start --silent ./docker-compose/config/pm2.json
 
