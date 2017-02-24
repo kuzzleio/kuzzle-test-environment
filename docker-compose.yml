@@ -9,24 +9,15 @@ services:
       - ./private.env
     volumes:
       - "./scripts:/scripts"
-    depends_on:
-      - redis
-      - elasticsearch
+      # - "./cache/npm:/root/.npm"
+      # - "./cache/docker:/var/lib/docker/image"
+      # - "./cache/apt:/var/cache/apt/archives/"
     ports:
       - 7331:7331
+    privileged: true
     environment:
-      - kuzzle_services__db__host=elasticsearch
-      - kuzzle_services__internalCache__node__host=redis
-      - kuzzle_services__memoryStorage__node__host=redis
+      - kuzzle_services__db__host=localhost
+      - kuzzle_services__internalCache__node__host=localhost
+      - kuzzle_services__memoryStorage__node__host=localhost
       - proxy_backend__mode=round-robin
       - kuzzle_plugins__kuzzle-plugin-cluster__privileged=true
-
-  redis:
-    image: redis:3
-    ports:
-      - 6379:6379
-
-  elasticsearch:
-    image: elasticsearch:5
-    ports:
-      - 9200:9200

@@ -3,13 +3,13 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SCRIPT_DIR=$(echo "$(pwd)/scripts" | sed "s#//#/#g")
+
 export CC="gcc-$GCC_VERSION"
 export CXX="g++-$GCC_VERSION"
+export PATH="/tmp/.npm-global/bin:$PATH"
+
 GIT_SSL_NO_VERIFY=true
-
-ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
-ELASTIC_PORT=${kuzzle_services__db__port:-9200}
-
 
 if [[ "$TRAVIS" == "true" ]]; then
   ## override path in travis
@@ -20,248 +20,83 @@ if [[ "$TRAVIS" == "true" ]]; then
 fi
 
 
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for elasticsearch to be available${COLOR_END}"
-while ! curl -f -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}"
-do
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to elasticsearch at http://${ELASTIC_HOST}:${ELASTIC_PORT}${COLOR_END}"
-    sleep 1
-done
-# create a tmp index just to force the shards to init
-curl -XPUT -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}/%25___tmp"
-echo -e "[$(date --rfc-3339 seconds)] - Elasticsearch is up. Waiting for shards to be active (can take a while)${COLOR_END}"
-E=$(curl -s "http://${ELASTIC_HOST}:${ELASTIC_PORT}/_cluster/health?wait_for_status=yellow&wait_for_active_shards=1&timeout=60s")
-curl -XDELETE -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}/%25___tmp"
-
-if ! (echo ${E} | grep -E '"status":"(yellow|green)"' > /dev/null); then
-    echo -e "[$(date --rfc-3339 seconds)] - Could not connect to elasticsearch in time. Aborting...${COLOR_END}"
-    exit 1
-fi
-
-
-
-
 echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting kuzzle environment installation...${COLOR_END}"
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Setting up npm...${COLOR_END}"
-echo -e
 
-if [ -d "/tmp/.npm-global" ]; then
-  rm -rf "/tmp/.npm-global"
-fi
-mkdir "/tmp/.npm-global"
+docker run \
+  --network="bridge" \
+  --name "kuzzle-base" \
+  -e "GCC_VERSION=$GCC_VERSION" \
+  -e "NODE_VERSION=$NODE_VERSION" \
+  --volume "/scripts:$SCRIPT_DIR" \
+  debian:jessie \
+    bash -c 'bash /scripts/install-deps.sh'
 
-npm cache clean --force
+docker commit \
+  --change 'WORKDIR /tmp/sandbox/app' \
+  kuzzle-base \
+  tests/kuzzle-base
 
-npm config set progress false
-npm config set strict-ssl false
-npm config set prefix '/tmp/.npm-global'
-
-export PATH="/tmp/.npm-global/bin:$PATH"
-
-
-
-
-echo -e
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install pm2...${COLOR_END}"
-echo -e
-
-npm uninstall -g pm2 || true
-
-if [[ "${GLOBAL_PM2_VERSION}" == "" ]]; then
-  npm install -g pm2
-else
-  npm install -g pm2@${GLOBAL_PM2_VERSION}
-fi
-
-pm2 flush
-
-
-
-
-
-
-echo -e
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...${COLOR_END}"
-echo -e
 
 if [ ! -d "/tmp/sandbox" ]; then
   mkdir -p "/tmp/sandbox"
 fi
 
-pushd "/tmp/sandbox" &>/dev/null
+pushd "/tmp/sandbox" > /dev/null
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle proxy '${PROXY_REPO}@${PROXY_VERSION}' ...${COLOR_END}"
 
-  echo -e
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle proxy '${PROXY_VERSION}' ...${COLOR_END}"
-  echo -e
+  bash "$SCRIPT_DIR/install-proxy.sh"
 
-  if [ -d "kuzzle-proxy" ]; then
-    rm -rf ./kuzzle-proxy
-  fi
+  pushd "kuzzle-proxy" > /dev/null
+    # pm2 start --silent ./docker-compose/config/pm2.json  > /dev/null
+    set -x
+    docker run --network="bridge" \
+               --detach \
+               --name "proxy" \
+               -e "proxy_backend__mode=round-robin" \
+               --volume "/tmp/sandbox/kuzzle-proxy:/tmp/sandbox/app" \
+               --publish "7512:7512" \
+               tests/kuzzle-base \
+                 bash -c 'pm2 start --silent ./docker-compose/config/pm2.json && tail -f /dev/null'
+    set +x
 
-  if [[ "${PROXY_PLUGINS}" == "" ]]; then
-    git clone --recursive "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy
-  else
-    git clone "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy
-  fi
-
-  pushd kuzzle-proxy &>/dev/null
-
-    npm install
-
-    if [[ "${PROXY_COMMON_OBJECT_VERSION}" != "" ]]; then
-      echo -e
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override proxy common objects '${PROXY_COMMON_OBJECT_VERSION}' ...${COLOR_END}"
-      echo -e
-
-      npm uninstall kuzzle-common-object || true
-      npm install "${PROXY_COMMON_OBJECT_VERSION}"
-    fi
-
-    if [[ "${LB_PROXY_VERSION}" != "" ]]; then
-      echo -e
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override load balancer proxy version '${LB_PROXY_VERSION}' ...${COLOR_END}"
-      echo -e
-
-      npm uninstall kuzzle-proxy || true
-      npm install "${LB_PROXY_VERSION}"
-    fi
-
-    if [ ! -d "plugins/enabled" ]; then
-      mkdir -p "plugins/enabled"
-    fi
-
-    pushd plugins/enabled &>/dev/null
-
-      if [[ "${PROXY_PLUGINS}" != "" ]]; then
-        echo -e
-        echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle proxy plugin list overrided${COLOR_END}"
-
-        rm -rf ./*
-
-        set -f
-
-        PLUGINS=(${PROXY_PLUGINS//:/ })
-
-        for i in "${!PLUGINS[@]}"; do
-          if [[ "${PLUGINS[i]}" != "" ]]; then
-            PLUGIN_INFO=(${PLUGINS[i]//#/ })
-
-            echo -e
-            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading proxy plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
-            echo -e
-            git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
-          fi
-        done
-
-        set +f
-      fi
-
-      for PLUGIN in *; do
-        if [ -d "${PLUGIN}" ]; then
-          pushd "${PLUGIN}" &>/dev/null
-            echo -e
-            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install proxy plugin '${PLUGIN}' ...${COLOR_END}"
-            echo -e
-
-            npm install
-
-          popd &>/dev/null
-        fi
-      done
-    popd &>/dev/null
-
-    pm2 start --silent ./docker-compose/config/pm2.json
-
-    echo -e
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle proxy '${PROXY_VERSION}' started ...${COLOR_END}"
-    echo -e
-  popd &>/dev/null
-
-
-
-
-
-
+  popd > /dev/null
 
   echo -e
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle '${KUZZLE_VERSION}' ...${COLOR_END}"
-  echo -e
 
-  if [ -d "kuzzle" ]; then
-    rm -rf ./kuzzle
-  fi
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle '${KUZZLE_REPO}@${KUZZLE_VERSION}' ...${COLOR_END}"
 
-  if [[ "${KUZZLE_PLUGINS}" == "" ]]; then
-    git clone --recursive "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle
-  else
-    git clone "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle
-  fi
+  bash "$SCRIPT_DIR/install-kuzzle.sh"
 
-  pushd kuzzle &>/dev/null
+  pushd "kuzzle" > /dev/null
+    #pm2 start --silent ./docker-compose/config/pm2.json > /dev/null
 
-    npm install
+    for i in `seq 1 ${KUZZLE_NODES:-1}`;
+    do
+        echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting ${i}/${KUZZLE_NODES:-1} kuzzle ...${COLOR_END}"
+        docker run --network="bridge" \
+                   --detach \
+                   --name "kuzzle_${i}" \
+                   --link "proxy:proxy" \
+                   --link "elasticsearch:elasticsearch" \
+                   --link "redis:redis" \
+                   -e "kuzzle_services__db__host=elasticsearch" \
+                   -e "kuzzle_services__internalCache__node__host=redis" \
+                   -e "kuzzle_services__memoryStorage__node__host=redis" \
+                   -e "kuzzle_services__proxyBroker__host=proxy" \
+                   -e "kuzzle_plugins__kuzzle-plugin-cluster__privileged=true" \
+                   --volume "/tmp/sandbox/kuzzle:/tmp/sandbox/app" \
+                   tests/kuzzle-base \
+                     bash -c 'pm2 start --silent ./docker-compose/config/pm2.json && tail -f /dev/null'
+    done
 
-    if [[ "${KUZZLE_COMMON_OBJECT_VERSION}" != "" ]]; then
-      echo -e
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override kuzzle common objects '${KUZZLE_COMMON_OBJECT_VERSION}' ...${COLOR_END}"
-      echo -e
-
-      npm uninstall kuzzle-common-object || true
-      npm install "${KUZZLE_COMMON_OBJECT_VERSION}"
-    fi
-
-
-    if [ ! -d "plugins/enabled" ]; then
-      mkdir -p "plugins/enabled"
-    fi
-
-    pushd plugins/enabled &>/dev/null
-
-      if [[ "${KUZZLE_PLUGINS}" != "" ]]; then
-        echo -e
-        echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle plugin list overrided${COLOR_END}"
-
-        rm -rf ./*
-
-        set -f
-
-        PLUGINS=(${KUZZLE_PLUGINS//:/ })
-
-        for i in "${!PLUGINS[@]}"; do
-          if [[ "${PLUGINS[i]}" != "" ]]; then
-            PLUGIN_INFO=(${PLUGINS[i]//#/ })
-
-            echo -e
-            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
-            echo -e
-            git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}"
-          fi
-        done
-
-        set +f
-      fi
-
-      for PLUGIN in ./*; do
-        if [ -d "${PLUGIN}" ]; then
-          pushd "${PLUGIN}" &>/dev/null
-            echo -e
-            echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle plugin '${PLUGIN}' ...${COLOR_END}"
-            echo -e
-
-            npm install
-          popd &>/dev/null
-        fi
-      done
-    popd &>/dev/null
-
-    pm2 start --silent ./docker-compose/config/pm2.json
-
-    echo -e
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle '${KUZZLE_VERSION}' started ...${COLOR_END}"
-    echo -e
-  popd &>/dev/null
+  popd > /dev/null
+popd > /dev/null
 
-popd &>/dev/null
+echo -e
 
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for kuzzle to be available${COLOR_END}"
