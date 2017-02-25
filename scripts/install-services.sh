@@ -1,20 +1,32 @@
 #!/bin/bash
 set -e
 
+COLOR_END="\e[39m"
+COLOR_BLUE="\e[34m"
+COLOR_YELLOW="\e[33m"
+
 ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
 
 # install docker if needed
-command -v docker &>/dev/null || (curl -ksSL https://get.docker.com/ | sh)
+command -v docker &>/dev/null || (
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install docker ...${COLOR_END}"; \
+  curl -ksSL https://get.docker.com/ | sh
+)
 
 # start docker daemon if needed
-docker ps -q || (service docker start && sleep 3)
+docker ps -q || (
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start docker daemon ...${COLOR_END}"; \
+  service docker start && sleep 3
+)
 
 # run external services through docker (todo: check if needed)
-docker inspect elasticsearch &>/dev/null && sh -c "docker kill elasticsearch" && sh -c "docker rm -vf elasticsearch"
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start elasticsearch service (docker) ...${COLOR_END}";
+docker inspect elasticsearch &>/dev/null && sh -c "docker kill elasticsearch || true" && sh -c "docker rm -vf elasticsearch || true"
 docker run --network=bridge --detach --name elasticsearch --publish 9200:9200 elasticsearch:"${ES_VERSION:-latest}"
 
-docker inspect redis &>/dev/null && sh -c "docker kill redis" && sh -c "docker rm -vf redis"
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start redis service (docker) ...${COLOR_END}";
+docker inspect redis &>/dev/null && sh -c "docker kill redis || true" && sh -c "docker rm -vf redis || true"
 docker run --network=bridge --detach --name redis --publish 6379:6379 redis:"${REDIS_VERSION:-latest}"
 
 # wait for services to start

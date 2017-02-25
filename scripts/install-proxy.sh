@@ -5,18 +5,20 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle proxy '${PROXY_REPO}@${PROXY_VERSION}' ...${COLOR_END}"
+
 if [ -d "kuzzle-proxy" ]; then
   rm -rf ./kuzzle-proxy
 fi
 
 if [[ "${PROXY_PLUGINS}" == "" ]]; then
-  git clone --recursive "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy > /dev/null
+  git clone --recursive "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy >> /dev/null
 else
-  git clone "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy > /dev/null
+  git clone "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy >> /dev/null
 fi
 
 pushd kuzzle-proxy > /dev/null
-
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle proxy dependencies ...${COLOR_END}"
   npm install > /dev/null
 
   if [[ "${PROXY_COMMON_OBJECT_VERSION}" != "" ]]; then
@@ -48,13 +50,20 @@ pushd kuzzle-proxy > /dev/null
 
       set -f
 
-      PLUGINS=(${PROXY_PLUGINS//:/ })
+      OIFS=$IFS;
+      IFS=":";
+      PROXY_PLUGINS=($PROXY_PLUGINS);
+      IFS=$OIFS;
 
-      for i in "${!PLUGINS[@]}"; do
-        if [[ "${PLUGINS[i]}" != "" ]]; then
-          PLUGIN_INFO=(${PLUGINS[i]//#/ })
+      for ((i=0; i<${#PROXY_PLUGINS[@]}; ++i)); do
+        if [[ "${PROXY_PLUGINS[$i]}" != "" ]]; then
 
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading proxy plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
+          OIFS=$IFS;
+          IFS="@";
+          PLUGIN_INFO=(${PROXY_PLUGINS[$i]});
+          IFS=$OIFS;
+
+          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading proxy plugin '${PLUGIN_INFO[0]}@${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
           git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}" > /dev/null
         fi
       done

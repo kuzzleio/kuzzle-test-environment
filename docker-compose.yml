@@ -16,8 +16,5 @@ services:
       - 7331:7331
     privileged: true
     environment:
-      - kuzzle_services__db__host=localhost
-      - kuzzle_services__internalCache__node__host=localhost
-      - kuzzle_services__memoryStorage__node__host=localhost
       - proxy_backend__mode=round-robin
       - kuzzle_plugins__kuzzle-plugin-cluster__privileged=true

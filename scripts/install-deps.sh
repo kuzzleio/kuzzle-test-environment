@@ -28,27 +28,29 @@ if [[ $(node --version) != "v$NODE_VERSION" ]]; then
   ln -s /usr/local/bin/node /usr/local/bin/nodejs > /dev/null
 fi
 
-# if [ -d "/tmp/.npm-global" ]; then
-#   rm -rf "/tmp/.npm-global"
-# fi
-# mkdir "/tmp/.npm-global"
-
 npm cache clean --force > /dev/null
 
 npm config set progress false
 npm config set strict-ssl false
-#npm config set prefix '/tmp/.npm-global'
 
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install pm2...${COLOR_END}"
-echo -e
+# check if pm2 binary is accessible in $PATH
+set +e
+pm2 > /dev/null
+PM2_STATUS=$?
+set -e
 
-npm uninstall -g pm2 > /dev/null || true
+[[ $PM2_STATUS == 0 && $(pm2 --version) == "${GLOBAL_PM2_VERSION}" ]] || (
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install pm2...${COLOR_END}"
+  echo -e
 
-if [[ "${GLOBAL_PM2_VERSION}" == "" ]]; then
-  npm install -g pm2  > /dev/null
-else
-  npm install -g pm2@${GLOBAL_PM2_VERSION}  > /dev/null
-fi
+  npm uninstall -g pm2 > /dev/null || true
+
+  if [[ "${GLOBAL_PM2_VERSION}" == "" ]]; then
+    npm install -g pm2  > /dev/null
+  else
+    npm install -g pm2@${GLOBAL_PM2_VERSION}  > /dev/null
+  fi
+)
 
 #echo PATH="/tmp/.npm-global/bin:$PATH" >> /etc/environment
 #source /etc/environment

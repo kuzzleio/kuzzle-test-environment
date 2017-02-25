@@ -13,12 +13,12 @@ Tests can be run either in a local development environment or on a continuous in
 KUZZLE_REPO=kuzzleio/kuzzle
 KUZZLE_VERSION=master
 KUZZLE_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects#master
-KUZZLE_PLUGINS=kuzzleio/kuzzle-plugin-auth-passport-local#master:kuzzleio/kuzzle-plugin-logger#master
+KUZZLE_PLUGINS=kuzzleio/kuzzle-plugin-auth-passport-local@master:kuzzleio/kuzzle-plugin-logger@master
 
 # kuzzle proxy configuration
 PROXY_REPO=kuzzleio/kuzzle-proxy
 PROXY_VERSION=master
-PROXY_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects#master
+PROXY_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects@master
 PROXY_PLUGINS=
 
 # services configuration
@@ -104,13 +104,17 @@ you can add as many as configuration as you need under `env.matrix` dictionary, 
 | ---- | --- | --- |
 | KUZZLE_REPO | kuzzleio/kuzzle | kuzzle github source repository |
 | KUZZLE_VERSION | master | kuzzle git reference <br /><br /> *can be a branch, tag or commit version* |
-| KUZZLE_COMMON_OBJECT_VERSION |  *(optional)* <br /> kuzzleio/kuzzle-common-objects#master | override kuzzle common object version <br /><br /> `<common_object_repo>#<common_object_version>` |
-| KUZZLE_PLUGINS | *(optional)* <br /> kuzzleio/kuzzle-plugin-auth-passport-local#master:kuzzleio/kuzzle-plugin-logger#master | override kuzzle server plugin list <br /><br /> `<plugin_1_repo>#<plugin_1_version>:<plugin_2_repo>#<plugin_2_version>`   |
+| KUZZLE_COMMON_OBJECT_VERSION |  *(optional)* <br /> kuzzleio/kuzzle-common-objects@master | override kuzzle common object version <br /><br /> `<common_object_repo>@<common_object_version>` |
+| KUZZLE_PLUGINS | *(optional)* <br /> kuzzleio/kuzzle-plugin-auth-passport-local@master:kuzzleio/kuzzle-plugin-logger@#master | override kuzzle server plugin list <br /><br /> `<plugin_1_repo>@<plugin_1_version>:<plugin_2_repo>@<plugin_2_version>`   |
 | | | |
 | PROXY_REPO | kuzzleio/kuzzle-proxy | proxy github source repository |
 | PROXY_VERSION | master | proxy git reference <br /><br /> *can be a branch, tag or commit version* |
-| PROXY_COMMON_OBJECT_VERSION | *(optional)* <br /> kuzzleio/kuzzle-common-objects#master | override proxy common object version <br /><br /> `<common_object_repo>#<common_object_version>` |
-| PROXY_PLUGINS | *(optional)* <br /> *empty* | override kuzzle proxy plugin list <br /><br /> `<plugin_1_repo>#<plugin_1_version>:<plugin_2_repo>#<plugin_2_version>`
+| PROXY_COMMON_OBJECT_VERSION | *(optional)* <br /> kuzzleio/kuzzle-common-objects@master | override proxy common object version <br /><br /> `<common_object_repo>@<common_object_version>` |
+| PROXY_PLUGINS | *(optional)* <br /> *empty* | override kuzzle proxy plugin list <br /><br /> `<plugin_1_repo>@<plugin_1_version>:<plugin_2_repo>@<plugin_2_version>`
+| | | |
+| LB_PROXY_VERSION | *(optional)* <br /> *empty* | override proxy version for load balancer configurations |
+| KUZZLE_NODES | 1 | number of kuzzle core to start |
+| ENABLE_CHAOS_MODE | *(optional)* <br /> *empty* | enable chaos mode, wich restart randoly kuzzle node during tests |
 | | | |
 | ES_VERSION | 5 | define elasticsearch version <br /><br /> *can be a major, minor or patch specific version*
 | REDIS_VERSION | 3 | define redis version <br /><br /> *can be a major, minor or patch specific version*
@@ -122,8 +126,9 @@ you can add as many as configuration as you need under `env.matrix` dictionary, 
 <br />
 
 ## enhancements
-- [ ] configure extra optional tests
+- [x] multiple kuzzle server instances
+- [x] enable chaos mode
+- [x] allow usage of kuzzle-load-balancer project
 - [ ] integrate kuzzle backoffice end-to-end tests
-- [ ] multiple kuzzle server instances
-- [ ] allow usage of kuzzle-load-balancer project
+- [ ] configure extra optional tests
 - [ ] link to release-request process (ci)

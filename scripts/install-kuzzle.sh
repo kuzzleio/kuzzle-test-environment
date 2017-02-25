@@ -5,18 +5,20 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle '${KUZZLE_REPO}@${KUZZLE_VERSION}' ...${COLOR_END}"
+
 if [ -d "kuzzle" ]; then
   rm -rf ./kuzzle
 fi
 
 if [[ "${KUZZLE_PLUGINS}" == "" ]]; then
-  git clone --recursive "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle > /dev/null
+  git clone --recursive "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle >> /dev/null
 else
-  git clone "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle > /dev/null
+  git clone "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle >> /dev/null
 fi
 
 pushd kuzzle > /dev/null
-
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle dependencies ...${COLOR_END}"
   npm install > /dev/null
 
   if [[ "${KUZZLE_COMMON_OBJECT_VERSION}" != "" ]]; then
@@ -41,16 +43,34 @@ pushd kuzzle > /dev/null
 
       set -f
 
-      PLUGINS=(${KUZZLE_PLUGINS//:/ })
+      OIFS=$IFS;
+      IFS=":";
+      KUZZLE_PLUGINS=($KUZZLE_PLUGINS);
+      IFS=$OIFS;
 
-      for i in "${!PLUGINS[@]}"; do
-        if [[ "${PLUGINS[i]}" != "" ]]; then
-          PLUGIN_INFO=(${PLUGINS[i]//#/ })
+      for ((i=0; i<${#KUZZLE_PLUGINS[@]}; ++i)); do
+        if [[ "${KUZZLE_PLUGINS[$i]}" != "" ]]; then
 
-          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
+          OIFS=$IFS;
+          IFS="@";
+          PLUGIN_INFO=(${KUZZLE_PLUGINS[$i]});
+          IFS=$OIFS;
+
+          echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}@${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
           git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}" > /dev/null
         fi
       done
+
+      # PLUGINS=$(echo $KUZZLE_PLUGINS | tr ":" "\n")
+      #
+      # for PLUGIN in "${PLUGINS}"; do
+      #   if [[ "${PLUGIN}" != "" ]]; then
+      #     PLUGIN_INFO=$(echo $PLUGIN | tr "@" "\n")
+      #
+      #     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
+      #     git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}" > /dev/null
+      #   fi
+      # done
 
       set +f
     else
