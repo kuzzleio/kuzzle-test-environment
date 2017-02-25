@@ -7,11 +7,12 @@ addons:
       - ubuntu-toolchain-r-test
 
 before_install: sudo ./scripts/pre-install.sh
-install: travis_retry sudo ./scripts/install.sh
 
-script: sudo ./scripts/run.sh
+script: travis_retry sudo ./scripts/install.sh && sudo ./scripts/run.sh
+
 after_success: sudo ./scripts/success.sh
-after_failure: "echo KO"
+after_failure: sudo ./scripts/errored.sh
+
 after_script: "echo ENDED"
 
 os: linux
