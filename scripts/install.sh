@@ -37,6 +37,9 @@ if [ ! -d "/tmp/sandbox" ]; then
   mkdir -p "/tmp/sandbox"
 fi
 
+START_INSTALL=$(date +%s)
+TIMEOUT_INSTALL=$START_INSTALL+60*15
+
 pushd "/tmp/sandbox" > /dev/null
   # insall and start proxy in a background process
   bash -c "$SCRIPT_DIR/install-proxy.sh && $SCRIPT_DIR/start-proxy.sh" &
@@ -49,7 +52,7 @@ echo -e
 
 # wait for kuzzle to be available to exit
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for kuzzle to be available${COLOR_END}"
-while ! curl -f -s -o /dev/null "http://localhost:7512"
+while $(date +%s) -lt "${TIMEOUT_INSTALL}" && ! curl -f -s -o /dev/null "http://localhost:7512"
 do
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to kuzzle at http://localhost:7512${COLOR_END}"
     sleep 8
