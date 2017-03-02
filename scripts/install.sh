@@ -1,4 +1,19 @@
 #!/bin/bash
+trap kill_process INT
+
+function kill_process() {
+  # kill remaining process
+  ps aux | grep /scripts/install-proxy.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep /scripts/install-kuzzle.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep /scripts/start-proxy.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep /scripts/start-kuzzle.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep gyp | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep npm | awk '{print $2}' | xargs kill -9 > /dev/null
+
+  exit 1
+}
+
+
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
@@ -18,6 +33,8 @@ if [[ ! $(docker images -a | grep tests/kuzzle-base) ]]; then
     -e "GCC_VERSION=$GCC_VERSION" \
     -e "NODE_VERSION=$NODE_VERSION" \
     -e "GLOBAL_PM2_VERSION=$GLOBAL_PM2_VERSION" \
+    -e "NODE_ENV=$NODE_ENV" \
+    -e "DEBUG=$DEBUG" \
     --volume "/scripts:$SCRIPT_DIR" \
     debian:jessie \
       bash -c 'bash /scripts/install-deps.sh'
@@ -37,7 +54,7 @@ if [ ! -d "/tmp/sandbox" ]; then
   mkdir -p "/tmp/sandbox"
 fi
 
-START_INSTALL=$(date +%s)
+START_INSTALL="$(date +%s)"
 TIMEOUT_INSTALL=$START_INSTALL+60*15
 
 pushd "/tmp/sandbox" > /dev/null
@@ -52,10 +69,20 @@ echo -e
 
 # wait for kuzzle to be available to exit
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for kuzzle to be available${COLOR_END}"
-while $(date +%s) -lt "${TIMEOUT_INSTALL}" && ! curl -f -s -o /dev/null "http://localhost:7512"
+while [[ "$(date +%s)" -lt "${TIMEOUT_INSTALL}" ]] && ! curl -f -s -o /dev/null "http://localhost:7512"
 do
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to kuzzle at http://localhost:7512${COLOR_END}"
     sleep 8
 done
 
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle available at http://localhost:7512${COLOR_END}"
+if ! curl -f -s -o /dev/null "http://localhost:7512"; then
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle installation timed out (> 15min)${COLOR_END}"
+
+  kill_process
+
+  exit 1
+else
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle available at http://localhost:7512${COLOR_END}"
+
+  exit 0
+fi

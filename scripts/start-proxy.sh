@@ -1,6 +1,4 @@
 #!/bin/bash
-set -ex
-
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
@@ -13,6 +11,10 @@ do
   # format env vars to docker run options format
   opt="-e ${vars[i]} ${opt}"
 done
+
+if [[ -e /etc/proxyrc ]]; then
+  opt="--volume /etc/proxyrc:/etc/proxyrc ${opt}"
+fi
 
 docker inspect "proxy" &>/dev/null && sh -c "docker kill proxy || true" && sh -c "docker rm -vf proxy || true"
 

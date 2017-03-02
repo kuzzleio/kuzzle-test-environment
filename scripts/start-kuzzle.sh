@@ -1,12 +1,9 @@
-
 #!/bin/bash
-set -ex
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
-export kuzzle_services__internalBroker__socket=/tmp/kuzzle-broker.sock
 export kuzzle_services__db__host=elasticsearch
 export kuzzle_services__internalCache__node__host=redis
 export kuzzle_services__memoryStorage__node__host=redis
@@ -20,6 +17,18 @@ do
   # format env vars to docker run options format
   opt="-e ${vars[i]} ${opt}"
 done
+
+if [[ -e /etc/kuzzlerc ]]; then
+  opt="--volume /etc/kuzzlerc:/etc/kuzzlerc ${opt}"
+fi
+
+set +e
+while ! docker inspect "proxy" &>/dev/null;
+do
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still waiting for proxy to be available before starting kuzzle${COLOR_END}"
+  sleep 2
+done
+set -e
 
 for i in $(seq 1 ${KUZZLE_NODES:-1});
 do

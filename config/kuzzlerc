@@ -1,0 +1,22 @@
+{
+  "services": {
+    "internalBroker": {
+      "socket": false,
+      "host": "0.0.0.0",
+      "port": 7911
+    }
+  },
+  "plugins": {
+    "kuzzle-plugin-cluster": {
+      "privileged": true
+    },
+    "kuzzle-plugin-logger": {
+      "threads": 0,
+      "services": {
+        "stdout": {
+          "level": "silly"
+        }
+      }
+    }
+  }
+}

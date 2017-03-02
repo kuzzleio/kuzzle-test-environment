@@ -5,16 +5,15 @@ services:
     image: debian:jessie
     command: /bin/bash -c '/scripts/pre-install.sh && /scripts/install.sh && /scripts/run.sh'
     env_file:
-      - ./common.env
-      - ./private.env
+      - ./env/common.env
+      - ./env/private.env
     volumes:
       - "./scripts:/scripts"
+      - "./config/kuzzlerc:/etc/kuzzlerc"
+      - "./config/proxyrc:/etc/proxyrc"
       # - "./cache/npm:/root/.npm"
       # - "./cache/docker:/var/lib/docker/image"
       # - "./cache/apt:/var/cache/apt/archives/"
     ports:
       - 7331:7331
     privileged: true
-    environment:
-      - proxy_backend__mode=round-robin
-      - kuzzle_plugins__kuzzle-plugin-cluster__privileged=true

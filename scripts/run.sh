@@ -7,7 +7,7 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running tests...$COLOR_END"
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting functional testing suite...$COLOR_END"
 
 if [[ $ENABLE_CHAOS_MODE == "true" ]]; then
   bash "$SCRIPT_DIR/run-chaos.sh" &
@@ -22,7 +22,7 @@ pushd "/tmp/sandbox" &>/dev/null
 
       npm run functional-testing
 
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle-proxy tests ok !$COLOR_END"
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle-proxy functional tests ok !$COLOR_END"
     else
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Skipping kuzzle-proxy, no functional tests found.$COLOR_END"
     fi
@@ -37,7 +37,7 @@ pushd "/tmp/sandbox" &>/dev/null
 
       npm run functional-testing
 
-      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests ok !$COLOR_END"
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests functional ok !$COLOR_END"
     else
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Skipping kuzzle, no functional tests found.$COLOR_END"
     fi

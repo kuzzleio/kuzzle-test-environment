@@ -61,17 +61,6 @@ pushd kuzzle > /dev/null
         fi
       done
 
-      # PLUGINS=$(echo $KUZZLE_PLUGINS | tr ":" "\n")
-      #
-      # for PLUGIN in "${PLUGINS}"; do
-      #   if [[ "${PLUGIN}" != "" ]]; then
-      #     PLUGIN_INFO=$(echo $PLUGIN | tr "@" "\n")
-      #
-      #     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle plugin '${PLUGIN_INFO[0]}'@'${PLUGIN_INFO[1]:-master}' ...${COLOR_END}"
-      #     git clone --recursive "https://${GH_TOKEN}@github.com/${PLUGIN_INFO[0]}.git" -b "${PLUGIN_INFO[1]:-master}" > /dev/null
-      #   fi
-      # done
-
       set +f
     else
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Using default plugins embeded with kuzzle...${COLOR_END}"
