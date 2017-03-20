@@ -8,7 +8,7 @@ addons:
 
 before_install: sudo ./scripts/pre-install.sh
 
-script: travis_retry sudo ./scripts/install.sh && sudo ./scripts/run.sh
+script: sudo ./scripts/install.sh && sudo ./scripts/run.sh
 
 after_success: sudo ./scripts/success.sh
 after_failure: sudo ./scripts/errored.sh
