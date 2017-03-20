@@ -1,17 +1,12 @@
 #!/bin/bash
-set -ex
 
-apt-get update
-apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl
+COLOR_END="\e[39m"
+COLOR_BLUE="\e[34m"
 
-curl -kO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz"
-tar -xf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1
-rm "node-v$NODE_VERSION-linux-x64.tar.gz"
-ln -s /usr/local/bin/node /usr/local/bin/nodejs
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [[ "$TRAVIS" == "true" ]]; then
-  # command -v docker || (curl -sL http://get.docker.com/ -o ./docker.sh && /bin/sh ./docker.sh)
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Installing system dependencies${COLOR_END}"
+bash "$SCRIPT_DIR/install-deps.sh"
 
-  docker run --detach --name elasticsearch --publish 9200:9200 elasticsearch:"${ES_VERSION:-latest}"
-  docker run --detach --name redis --publish 6379:6379 redis:"${REDIS_VERSION:-latest}"
-fi
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Installing services dependencies (elasticsearch & redis)${COLOR_END}"
+bash "$SCRIPT_DIR/install-services.sh"

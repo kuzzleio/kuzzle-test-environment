@@ -7,11 +7,12 @@ addons:
       - ubuntu-toolchain-r-test
 
 before_install: sudo ./scripts/pre-install.sh
-install: travis_retry ./scripts/install.sh
 
-script: ./scripts/run.sh
-after_success: ./scripts/success.sh
-after_failure: "echo KO"
+script: travis_retry sudo ./scripts/install.sh && sudo ./scripts/run.sh
+
+after_success: sudo ./scripts/success.sh
+after_failure: sudo ./scripts/errored.sh
+
 after_script: "echo ENDED"
 
 os: linux
@@ -28,9 +29,8 @@ env:
     - KUZZLE_REPO: kuzzleio/kuzzle
       KUZZLE_VERSION: rc.x
       KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
-      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth#master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger:kuzzleio/kuzzle-plugin-cluster
+      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth#master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger
       PROXY_REPO: kuzzleio/kuzzle-proxy
       PROXY_VERSION: rc.x
       PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#2.x
       PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt
-      "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true

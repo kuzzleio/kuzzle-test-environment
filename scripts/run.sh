@@ -1,46 +1,45 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
-if [[ "$TRAVIS" == "true" ]]; then
-  ## override path in travis
-  ## this is done to remove node bin from nvm in path
-  ## nvm was not accesible, so we cant just do
-  ## nvm disable
-  export PATH="/home/travis/.rvm/gems/ruby-2.2.5/bin:/home/travis/.rvm/gems/ruby-2.2.5@global/bin:/home/travis/.rvm/rubies/ruby-2.2.5/bin:/home/travis/.rvm/bin:/home/travis/bin:/home/travis/.local/bin:/home/travis/.gimme/versions/go1.4.2.linux.amd64/bin:/usr/local/phantomjs/bin:./node_modules/.bin:/usr/local/maven-3.2.5/bin:/usr/local/clang-3.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin"
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting functional testing suite...$COLOR_END"
+
+if [[ $ENABLE_CHAOS_MODE == "true" ]]; then
+  bash "$SCRIPT_DIR/run-chaos.sh" &
 fi
-
-export PATH="/tmp/.npm-global/bin:$PATH"
-
-echo -e
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Runing tests...$COLOR_END"
-echo -e
 
 pushd "/tmp/sandbox" &>/dev/null
   pushd kuzzle-proxy &>/dev/null
-    echo -e
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Runing kuzzle-proxy tests...$COLOR_END"
-    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle-proxy tests...$COLOR_END"
 
-    npm run test
+    if [[ $(npm run | grep functional-testing) ]]; then
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle-proxy functional tests...$COLOR_END"
 
-    echo -e
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle-proxy tests ok !$COLOR_END"
-    echo -e
+      npm run functional-testing
+
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle-proxy functional tests ok !$COLOR_END"
+    else
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Skipping kuzzle-proxy, no functional tests found.$COLOR_END"
+    fi
+
   popd &>/dev/null
 
   pushd kuzzle &>/dev/null
-    echo -e
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Runing kuzzle tests...$COLOR_END"
-    echo -e
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle tests...$COLOR_END"
 
-    npm run test
+    if [[ $(npm run | grep functional-testing) ]]; then
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle functional tests...$COLOR_END"
 
-    echo -e
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests ok !$COLOR_END"
-    echo -e
+      npm run functional-testing
+
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests functional ok !$COLOR_END"
+    else
+      echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Skipping kuzzle, no functional tests found.$COLOR_END"
+    fi
   popd &>/dev/null
 popd &>/dev/null
