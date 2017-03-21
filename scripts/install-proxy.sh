@@ -25,7 +25,7 @@ pushd kuzzle-proxy > /dev/null
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override proxy common objects '${PROXY_COMMON_OBJECT_VERSION}' ...${COLOR_END}"
 
     npm uninstall kuzzle-common-object > /dev/null || true
-    npm install "${PROXY_COMMON_OBJECT_VERSION}" > /dev/null
+    npm install "${PROXY_COMMON_OBJECT_VERSION/#/@}" > /dev/null
   else
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Using default common objects embeded with proxy...${COLOR_END}"
   fi
@@ -34,7 +34,7 @@ pushd kuzzle-proxy > /dev/null
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Override load balancer proxy version '${LB_PROXY_VERSION}' ...${COLOR_END}"
 
     npm uninstall kuzzle-proxy > /dev/null || true
-    npm install "${LB_PROXY_VERSION}" > /dev/null
+    npm install "${LB_PROXY_VERSION/#/@}" > /dev/null
   fi
 
   if [ ! -d "plugins/enabled" ]; then
