@@ -32,8 +32,8 @@ env:
       KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
       PROXY_REPO: kuzzleio/kuzzle-load-balancer
       PROXY_VERSION: 1.x
-      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt#2.0.1
-      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy#1.0.0-RC9
+      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt@2.0.1
+      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
       "proxy_backend__mode": round-robin
       "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
     # RC9.3 entreprise version (failover)
@@ -42,7 +42,7 @@ env:
       KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
       PROXY_REPO: kuzzleio/kuzzle-load-balancer
       PROXY_VERSION: 1.x
-      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt#2.0.1
-      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy#1.0.0-RC9
+      PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt@2.0.1
+      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
       "proxy_backend__mode": failover
       "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
