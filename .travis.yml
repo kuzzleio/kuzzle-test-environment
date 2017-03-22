@@ -35,6 +35,9 @@ env:
       LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
       "proxy_backend__mode": round-robin
       "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
+      "kuzzle_services__internalBroker__socket": false
+      "kuzzle_services__internalBroker__host": 0.0.0.0
+      "kuzzle_services__internalBroker__port": 7911
     # RC9.6 entreprise version (failover)
     - KUZZLE_REPO: kuzzleio/kuzzle
       KUZZLE_VERSION: 1.0.0-RC9.6
@@ -44,3 +47,6 @@ env:
       LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
       "proxy_backend__mode": failover
       "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
+      "kuzzle_services__internalBroker__socket": false
+      "kuzzle_services__internalBroker__host": 0.0.0.0
+      "kuzzle_services__internalBroker__port": 7911
