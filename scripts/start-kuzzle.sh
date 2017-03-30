@@ -43,6 +43,8 @@ do
                --link "elasticsearch:elasticsearch" \
                --link "redis:redis" \
                --volume "/tmp/sandbox/kuzzle:/tmp/sandbox/app" \
+               -e "DEBUG=*" \
+               -e "NODE_ENV=development" \
                ${opt} \
                tests/kuzzle-base \
                  bash -c 'pm2 start --silent ./docker-compose/config/pm2.json && tail -f /dev/null'
