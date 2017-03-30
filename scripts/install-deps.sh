@@ -10,14 +10,14 @@ dpkg -s gcc-"$GCC_VERSION" &>/dev/null || (
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install debian packages dependencies...${COLOR_END}"
 
   apt-get update > /dev/null && \
-  apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl > /dev/null
+  apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl jq > /dev/null
 )
 
 # install nodejs in required version
 if [[ $(node --version) != "v$NODE_VERSION" ]]; then
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install nodejs v${NODE_VERSION}...${COLOR_END}"
 
-  curl -kO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" > /dev/null
+  curl --silent -kO "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" > /dev/null
   tar -xsSf "node-v${NODE_VERSION}-linux-x64.tar.gz" -C /usr/local --strip-components=1 > /dev/null
   rm "node-v${NODE_VERSION}-linux-x64.tar.gz" > /dev/null
 

@@ -18,6 +18,9 @@ after_script: "echo ENDED"
 os: linux
 sudo: required
 
+matrix:
+
+
 env:
   global:
     - NODE_VERSION: 6.9.5
@@ -26,27 +29,55 @@ env:
     - ES_VERSION: 5
     - REDIS_VERSION: 3
   matrix:
-    # RC9.6 entreprise version (round-robin)
-    - KUZZLE_REPO: kuzzleio/kuzzle
-      KUZZLE_VERSION: 1.0.0-RC9.6
-      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
-      PROXY_REPO: kuzzleio/kuzzle-load-balancer
-      PROXY_VERSION: 1.x
-      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
-      "proxy_backend__mode": round-robin
-      "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
-      "kuzzle_services__internalBroker__socket": false
-      "kuzzle_services__internalBroker__host": 0.0.0.0
-      "kuzzle_services__internalBroker__port": 7911
-    # RC9.6 entreprise version (failover)
-    - KUZZLE_REPO: kuzzleio/kuzzle
-      KUZZLE_VERSION: 1.0.0-RC9.6
-      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
-      PROXY_REPO: kuzzleio/kuzzle-load-balancer
-      PROXY_VERSION: 1.x
-      LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
-      "proxy_backend__mode": failover
-      "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
-      "kuzzle_services__internalBroker__socket": false
-      "kuzzle_services__internalBroker__host": 0.0.0.0
-      "kuzzle_services__internalBroker__port": 7911
+    fast_finish: true
+    allow_failures:
+      - ALLOW_FAILURE: true
+    include:
+       # RC9.6 open source version
+      - KUZZLE_REPO: kuzzleio/kuzzle
+        KUZZLE_VERSION: 1.0.0-RC9.6
+        PROXY_REPO: kuzzleio/kuzzle-proxy
+        PROXY_VERSION: 1.0.0-RC9
+      # latest open source version
+      - KUZZLE_REPO: kuzzleio/kuzzle
+        KUZZLE_VERSION: master
+        KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
+        KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger
+        PROXY_REPO: kuzzleio/kuzzle-proxy
+        PROXY_VERSION: master
+        PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
+        PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt
+      # RC9.6 entreprise version (round-robin)
+      - KUZZLE_REPO: kuzzleio/kuzzle
+        KUZZLE_VERSION: 1.0.0-RC9.6
+        KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
+        PROXY_REPO: kuzzleio/kuzzle-load-balancer
+        PROXY_VERSION: 1.x
+        LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
+        "proxy_backend__mode": round-robin
+        "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
+        "kuzzle_services__internalBroker__socket": false
+        "kuzzle_services__internalBroker__host": 0.0.0.0
+        "kuzzle_services__internalBroker__port": 7911
+      # RC9.6 entreprise version (failover)
+      - KUZZLE_REPO: kuzzleio/kuzzle
+        KUZZLE_VERSION: 1.0.0-RC9.6
+        KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-local@3.0.4:kuzzleio/kuzzle-plugin-logger@2.0.7:kuzzleio/kuzzle-plugin-cluster@1.x
+        PROXY_REPO: kuzzleio/kuzzle-load-balancer
+        PROXY_VERSION: 1.x
+        LB_PROXY_VERSION: kuzzleio/kuzzle-proxy@1.0.0-RC9
+        "proxy_backend__mode": failover
+        "kuzzle_plugins__kuzzle-plugin-cluster__privileged": true
+        "kuzzle_services__internalBroker__socket": false
+        "kuzzle_services__internalBroker__host": 0.0.0.0
+        "kuzzle_services__internalBroker__port": 7911
+      # nightly open source version
+      - ALLOW_FAILURE: true
+        KUZZLE_REPO: kuzzleio/kuzzle
+        KUZZLE_VERSION: rc.x
+        KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@2.x
+        KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth@master:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger
+        PROXY_REPO: kuzzleio/kuzzle-proxy
+        PROXY_VERSION: rc.x
+        PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@2.x
+        PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt

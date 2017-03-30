@@ -11,7 +11,7 @@ ELASTIC_PORT=${kuzzle_services__db__port:-9200}
 # install docker if needed
 command -v docker &>/dev/null || (
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install docker ...${COLOR_END}"; \
-  curl -ksSL https://get.docker.com/ | sh
+  curl --silent -ksSL https://get.docker.com/ | sh
 )
 
 # start docker daemon if needed
