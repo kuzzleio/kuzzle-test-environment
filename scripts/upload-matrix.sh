@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ "$TRAVIS_BRANCH" -ne "master" ]; then
+if [[ "$TRAVIS_BRANCH" != "master" ]]; then
   echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test branch must be master)${COLOR_END}"
   exit 0
 fi
 
-if [ "$TRAVIS_ALLOW_FAILURE" -eq "false" ]; then
+if [[ "$TRAVIS_ALLOW_FAILURE" == "false" ]]; then
   echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test allowed to fail)${COLOR_END}"
   exit 0
 fi
