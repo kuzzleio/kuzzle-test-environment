@@ -13,7 +13,7 @@ script: sudo ./scripts/install.sh && sudo ./scripts/run.sh
 after_success: sudo ./scripts/success.sh
 after_failure: sudo ./scripts/errored.sh
 
-after_script: "echo ENDED"
+after_script: sudo ./scripts/upload-matrix.sh
 
 os: linux
 sudo: required
