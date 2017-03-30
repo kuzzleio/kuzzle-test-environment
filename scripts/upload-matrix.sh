@@ -1,11 +1,17 @@
 #!/bin/bash
 
-if [ $TRAVIS_BRANCH -ne "master" ] && [ $TRAVIS_ALLOW_FAILURE -eq "false" ]; then
-  echo "Skipping upload tests result to kuzzle compatibility matrix (test branch must be master or entreprise)"
+if [ "$TRAVIS_BRANCH" -ne "master" ]; then
+  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test branch must be master)${COLOR_END}"
   exit 0
-else
-  echo "Uploading tests result to kuzzle compatibility matrix"
 fi
+
+if [ "$TRAVIS_ALLOW_FAILURE" -eq "false" ]; then
+  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test allowed to fail)${COLOR_END}"
+  exit 0
+fi
+
+COLOR_END="\e[39m"
+COLOR_BLUE="\e[34m"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -97,6 +103,8 @@ backoffice_repository=
 backoffice_branch=
 # - backoffice version
 backoffice_version=
+# - backoffice embeded sdk version
+backoffice_sdk_version=
 # - entreprise version ?
 is_entreprise=$(echo $proxy_repository | grep "load-balancer" | wc -l)
 # - load balancer version
@@ -138,7 +146,8 @@ docker_version=$(docker -v)
 
 
 
-data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
+data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$backoffice_sdk_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
 
+echo -e "${COLOR_BLUE}Uploading tests result to kuzzle compatibility matrix${COLOR_END}"
 echo $data
 curl --silent -H "content-type: application/json" -H "Authorization: Bearer $access_token" -X POST "https://sheets.googleapis.com/v4/spreadsheets/$spreadsheetId/values/$spreadsheetSheet:append?valueInputOption=RAW" -d "$data" > /dev/null
