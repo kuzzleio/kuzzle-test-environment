@@ -98,13 +98,13 @@ proxy_plugins=$(IFS="|"; echo "${proxy_plugins[*]}")
 proxy_plugins=${proxy_plugins//|/"\n"}
 
 # - backoffice repository
-backoffice_repository=
+backoffice_repository=$(cat /tmp/sandbox/kuzzle-backoffice/package.json | jq -r ".repository.url")
 # - backoffice branch
-backoffice_branch=
+backoffice_branch=$(cd /tmp/sandbox/kuzzle-backoffice/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - backoffice version
-backoffice_version=
+backoffice_version=$(cat /tmp/sandbox/kuzzle-backoffice/package.json | jq -r ".version")
 # - backoffice embeded sdk version
-backoffice_sdk_version=
+backoffice_sdk_version=$(cat /tmp/sandbox/kuzzle-backoffice/node_modules/kuzzle-sdk/package.json | jq -r ".version")
 # - entreprise version ?
 is_entreprise=$(echo $proxy_repository | grep "load-balancer" | wc -l)
 # - load balancer version

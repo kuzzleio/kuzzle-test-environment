@@ -12,9 +12,9 @@ if [ -d "kuzzle" ]; then
 fi
 
 if [[ "${KUZZLE_PLUGINS}" == "" ]]; then
-  git clone --recursive "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle >> /dev/null
+  git clone --recursive "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle 1> /dev/null &2>1
 else
-  git clone "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle >> /dev/null
+  git clone "https://${GH_TOKEN}@github.com/${KUZZLE_REPO}.git" -b "${KUZZLE_VERSION}" kuzzle 1> /dev/null &2>1
 fi
 
 pushd kuzzle > /dev/null

@@ -63,6 +63,9 @@ pushd "/tmp/sandbox" > /dev/null
 
   # insall and start kuzzle nodes in a background process
   bash -c "$SCRIPT_DIR/install-kuzzle.sh && $SCRIPT_DIR/start-kuzzle.sh" &
+
+  # insall and start kuzzle nodes in a background process
+  bash -c "$SCRIPT_DIR/install-backoffice.sh && $SCRIPT_DIR/start-backoffice.sh" &
 popd > /dev/null
 
 echo -e
