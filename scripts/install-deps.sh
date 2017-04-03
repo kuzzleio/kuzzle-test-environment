@@ -33,6 +33,8 @@ npm cache clean --force > /dev/null
 npm config set progress false
 npm config set strict-ssl false
 
+npm i -g @testim/testim-cli
+
 # check if pm2 binary is accessible in $PATH
 set +e
 pm2 > /dev/null

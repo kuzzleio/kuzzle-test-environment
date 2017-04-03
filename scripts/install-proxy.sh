@@ -12,9 +12,9 @@ if [ -d "kuzzle-proxy" ]; then
 fi
 
 if [[ "${PROXY_PLUGINS}" == "" ]]; then
-  git clone --recursive "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy >> /dev/null
+  git clone --recursive "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy 1> /dev/null &2>1
 else
-  git clone "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy >> /dev/null
+  git clone "https://${GH_TOKEN}@github.com/${PROXY_REPO}.git" -b "${PROXY_VERSION}" kuzzle-proxy 1> /dev/null &2>1
 fi
 
 pushd kuzzle-proxy > /dev/null

@@ -23,8 +23,8 @@ docker run --network="bridge" \
            --name "proxy" \
            --volume "/tmp/sandbox/kuzzle-proxy:/tmp/sandbox/app" \
            --publish "7512:7512" \
-           -e "DEBUG=*" \
-           -e "NODE_ENV=development" \
+           -e "DEBUG=$DEBUG" \
+           -e "NODE_ENV=$NODE_ENV" \
            ${opt} \
            tests/kuzzle-base \
              bash -c 'pm2 start --silent ./docker-compose/config/pm2.json && tail -f /dev/null'
