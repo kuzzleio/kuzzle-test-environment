@@ -5,8 +5,6 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-  hosts:
-    - backoffice
 
 before_install: sudo ./scripts/pre-install.sh
 

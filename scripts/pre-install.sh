@@ -10,5 +10,3 @@ bash "$SCRIPT_DIR/install-deps.sh"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Installing services dependencies (elasticsearch & redis)${COLOR_END}"
 bash "$SCRIPT_DIR/install-services.sh"
-
-npm i -g @testim/testim-cli
