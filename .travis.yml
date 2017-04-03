@@ -30,8 +30,8 @@ env:
     - GCC_VERSION: 4.9
     - ES_VERSION: 5
     - REDIS_VERSION: 3
-    - NODE_ENV: development
-    - DEBUG: *
+    - NODE_ENV: "development"
+    - DEBUG: "*"
   matrix:
      # RC9.6 open source version
     - KUZZLE_REPO: kuzzleio/kuzzle
