@@ -1,5 +1,5 @@
 {
   "backend": {
-    "mode": "round-robin"
+    "mode": "standard"
   }
 }
