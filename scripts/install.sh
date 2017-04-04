@@ -55,7 +55,7 @@ if [ ! -d "/tmp/sandbox" ]; then
 fi
 
 START_INSTALL="$(date +%s)"
-TIMEOUT_INSTALL=$START_INSTALL+60*15
+TIMEOUT_INSTALL=$START_INSTALL+60*5
 
 pushd "/tmp/sandbox" > /dev/null
   # insall and start proxy in a background process
@@ -79,7 +79,7 @@ do
 done
 
 if ! curl -f -s -o /dev/null "http://localhost:7512"; then
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle installation timed out (> 15min)${COLOR_END}"
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle installation timed out (> 5min)${COLOR_END}"
 
   kill_process
 
