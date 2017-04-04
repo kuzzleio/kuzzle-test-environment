@@ -37,6 +37,8 @@ if [[ ! $(docker images -a | grep tests/kuzzle-base) ]]; then
     -e "GLOBAL_PM2_VERSION=$GLOBAL_PM2_VERSION" \
     -e "NODE_ENV=$NODE_ENV" \
     -e "DEBUG=$DEBUG" \
+    -e "CC=gcc-$GCC_VERSION" \
+    -e "CXX=g++-$GCC_VERSION" \
     --volume "$SCRIPT_DIR:/scripts" \
     debian:jessie \
       bash -c 'bash /scripts/install-deps.sh'

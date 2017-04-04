@@ -14,10 +14,6 @@ echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install debian packages dep
 
 apt-get update
 apt-get install -yq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl jq
-export CC="gcc-$GCC_VERSION" CXX="g++-$GCC_VERSION"
-
-gcc --version
-g++ --version
 
 # install nodejs in required version
 if [[ $(node --version) != "v$NODE_VERSION" ]]; then
