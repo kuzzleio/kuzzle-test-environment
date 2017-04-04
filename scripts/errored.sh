@@ -9,6 +9,9 @@ echo -e "${COLOR_BLUE}Tests errored${COLOR_END}"
 echo -e "- ${COLOR_BLUE}docker containers status:$COLOR_END"
 docker ps -a
 
+echo -e "- ${COLOR_BLUE}proxy container status:$COLOR_END"
+docker inspect "proxy"
+
 echo -e "- ${COLOR_BLUE}proxy container logs:$COLOR_END"
 docker logs "proxy"
 
@@ -17,6 +20,9 @@ docker exec -ti "proxy" bash -c "tail -n 1000 /root/.pm2/logs/*"
 
 for i in $(seq 1 ${KUZZLE_NODES:-1});
 do
+  echo -e "- ${COLOR_BLUE}kuzzle ${i} container status:$COLOR_END"
+  docker inspect "kuzzle_${i}"
+
   echo -e "- ${COLOR_BLUE}kuzzle ${i} container logs:$COLOR_END"
   docker logs "kuzzle_${i}"
 

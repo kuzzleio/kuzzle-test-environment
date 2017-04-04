@@ -5,8 +5,10 @@ function kill_process() {
   # kill remaining process
   ps aux | grep /scripts/install-proxy.sh | awk '{print $2}' | xargs kill -9 > /dev/null
   ps aux | grep /scripts/install-kuzzle.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep /scripts/install-backoffice.sh | awk '{print $2}' | xargs kill -9 > /dev/null
   ps aux | grep /scripts/start-proxy.sh | awk '{print $2}' | xargs kill -9 > /dev/null
   ps aux | grep /scripts/start-kuzzle.sh | awk '{print $2}' | xargs kill -9 > /dev/null
+  ps aux | grep /scripts/start-backoffice.sh | awk '{print $2}' | xargs kill -9 > /dev/null
   ps aux | grep gyp | awk '{print $2}' | xargs kill -9 > /dev/null
   ps aux | grep npm | awk '{print $2}' | xargs kill -9 > /dev/null
 
