@@ -1,6 +1,3 @@
-services:
-  - docker
-
 addons:
   apt:
     sources:
