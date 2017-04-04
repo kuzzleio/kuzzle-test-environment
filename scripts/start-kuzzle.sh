@@ -23,7 +23,7 @@ if [[ -e /etc/kuzzlerc ]]; then
 fi
 
 set +e
-while [[ $(docker inspect "proxy" -f "{{ .State.Status }}") != "running" ]]  &>/dev/null;
+while [[ $(docker inspect "proxy" -f "{{ .State.Status }}") != "running" ]];
 do
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still waiting for proxy to be available before starting kuzzle${COLOR_END}"
   sleep 2

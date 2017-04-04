@@ -5,11 +5,13 @@ COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
 set +e
-while [[ $(docker inspect "proxy" -f "{{ .State.Status }}") != "running" ]]  &>/dev/null;
+set -x
+while [[ $(docker inspect "proxy" -f "{{ .State.Status }}") != "running" ]];
 do
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still waiting for proxy to be available before starting kuzzle backoffice${COLOR_END}"
   sleep 2
 done
+set +x
 set -e
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting kuzzle backoffice...${COLOR_END}"
