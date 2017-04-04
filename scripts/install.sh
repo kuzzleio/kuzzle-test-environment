@@ -62,6 +62,8 @@ START_INSTALL="$(date +%s)"
 TIMEOUT_INSTALL=$START_INSTALL+60*5
 
 pushd "/tmp/sandbox" > /dev/null
+  export CC="gcc-$GCC_VERSION" CXX="g++-$GCC_VERSION"
+  
   # insall and start proxy in a background process
   bash -c "$SCRIPT_DIR/install-proxy.sh && $SCRIPT_DIR/start-proxy.sh" &
 
