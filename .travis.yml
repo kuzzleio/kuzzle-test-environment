@@ -14,11 +14,12 @@ after_script: sudo ./scripts/upload-matrix.sh
 
 os: linux
 sudo: required
+dist: trusty
 
 matrix:
   fast_finish: true
   allow_failures:
-    env: ALLOW_FAILURE=true
+    - env: ALLOW_FAILURE=true
 
 env:
   global:
