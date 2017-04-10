@@ -18,6 +18,9 @@ fi
 
 docker inspect "proxy" &>/dev/null && sh -c "docker kill proxy || true" && sh -c "docker rm -vf proxy || true"
 
+# ?
+sleep 15
+
 docker run --network="bridge" \
            --detach \
            --name "proxy" \
