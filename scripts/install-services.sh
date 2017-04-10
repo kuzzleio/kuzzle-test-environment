@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
@@ -9,16 +8,17 @@ ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
 ELASTIC_PORT=${kuzzle_services__db__port:-9200}
 
 # install docker if needed
-command -v docker &>/dev/null || (
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install docker ...${COLOR_END}"; \
-  curl --silent -ksSL https://get.docker.com/ | sh
-)
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install docker ...${COLOR_END}";
+curl --silent -ksSL https://get.docker.com/ | sh
+
 
 # start docker daemon if needed
 docker ps -q || (
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start docker daemon ...${COLOR_END}"; \
   service docker start && sleep 3
 )
+
+set -e
 
 # run external services through docker (todo: check if needed)
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start elasticsearch service (docker) ...${COLOR_END}";
