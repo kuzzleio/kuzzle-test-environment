@@ -12,7 +12,7 @@ pushd /tmp/sandbox/ > /dev/null
     rm -rf ./kuzzle-backoffice
   fi
 
-  git clone "https://${GH_TOKEN}@github.com/${BACKOFFICE_REPO}.git" -b "${BACKOFFICE_VERSION}" kuzzle-backoffice 1> /dev/null &2>1
+  git clone "https://${GH_TOKEN}@github.com/${BACKOFFICE_REPO}.git" -b "${BACKOFFICE_VERSION}" kuzzle-backoffice > /dev/null
 
   pushd kuzzle-backoffice > /dev/null
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install kuzzle backoffice dependencies ...${COLOR_END}"

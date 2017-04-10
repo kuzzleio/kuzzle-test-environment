@@ -138,8 +138,9 @@ npm_version=$(npm --version)
 # - python version
 python_version=$(python --version 2>&1)
 # - pm2 version (called twice to ensure that daemon is running)
-pm2_version=$(DEBUG= pm2 --version)
-pm2_version=$(DEBUG= pm2 --version)
+pm2_version=
+# pm2_version=$(DEBUG= pm2 --version)
+# pm2_version=$(DEBUG= pm2 --version)
 # - os version
 os_version=$(lsb_release -d 2> /dev/null | sed 's/:\t/:/' | cut -d ':' -f 2-)
 # - kernel version
@@ -155,3 +156,7 @@ set +x
 
 echo -e "${COLOR_BLUE}Uploading tests result to kuzzle compatibility matrix${COLOR_END}"
 curl --silent -H "content-type: application/json" -H "Authorization: Bearer $access_token" -X POST "https://sheets.googleapis.com/v4/spreadsheets/$spreadsheetId/values/$spreadsheetSheet:append?valueInputOption=RAW" -d "$data" > /dev/null
+
+set -x
+#?
+DEBUG= pm2 --version
