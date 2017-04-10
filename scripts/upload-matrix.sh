@@ -138,9 +138,8 @@ npm_version=$(npm --version)
 # - python version
 python_version=$(python --version 2>&1)
 # - pm2 version (called twice to ensure that daemon is running)
-pm2_version=
-# pm2_version=$(DEBUG= pm2 --version)
-# pm2_version=$(DEBUG= pm2 --version)
+pm2_version=$(DEBUG= pm2 --version)
+pm2_version=$(DEBUG= pm2 --version)
 # - os version
 os_version=$(lsb_release -d 2> /dev/null | sed 's/:\t/:/' | cut -d ':' -f 2-)
 # - kernel version

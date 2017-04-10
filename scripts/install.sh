@@ -23,36 +23,6 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting kuzzle environment installation...${COLOR_END}"
 
-if [[ ! $(docker images -a | grep tests/kuzzle-base) ]]; then
-  # create container with all dependencies needed to run kuzzle env components
-  # dynamicly created here because we can setup easily
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Generate image 'tests/kuzzle-base' ...${COLOR_END}"
-
-  docker run \
-    --network="bridge" \
-    --name "kuzzle-base" \
-    -e "GCC_VERSION=$GCC_VERSION" \
-    -e "NODE_VERSION=$NODE_VERSION" \
-    -e "GLOBAL_PM2_VERSION=$GLOBAL_PM2_VERSION" \
-    -e "NODE_ENV=$NODE_ENV" \
-    -e "DEBUG=$DEBUG" \
-    -e "CC=gcc-$GCC_VERSION" \
-    -e "CXX=g++-$GCC_VERSION" \
-    --volume "$SCRIPT_DIR:/scripts" \
-    debian:jessie \
-      bash -c 'bash /scripts/install-deps.sh'
-
-  # create base image "tests/kuzzle-base:latest" based on previous container
-  docker commit \
-    --change 'WORKDIR /tmp/sandbox/app' \
-    kuzzle-base \
-    tests/kuzzle-base:latest
-else
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Generated image 'tests/kuzzle-base' exists, using it ...${COLOR_END}"
-fi
-
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...${COLOR_END}"
-
 if [ ! -d "/tmp/sandbox" ]; then
   mkdir -p "/tmp/sandbox"
 fi
@@ -62,6 +32,8 @@ TIMEOUT_INSTALL=$START_INSTALL+60*15
 
 pushd "/tmp/sandbox" > /dev/null
   export CC="gcc-$GCC_VERSION" CXX="g++-$GCC_VERSION"
+
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...${COLOR_END}"
 
   # insall and start proxy in a background process
   bash -c "$SCRIPT_DIR/install-proxy.sh && $SCRIPT_DIR/start-proxy.sh" &

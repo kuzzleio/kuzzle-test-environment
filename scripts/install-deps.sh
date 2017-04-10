@@ -1,19 +1,64 @@
 #!/bin/bash
 
-gcc --version
-g++ --version
-
-set -e
-
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
-# install debian packages dependencies
-echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install debian packages dependencies...${COLOR_END}"
 
-apt-get update &> /dev/null
-apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl jq &> /dev/null
+lsb_dist=''
+dist_version=''
+
+if command -v lsb_release > /dev/null 2>&1; then
+  lsb_dist="$(lsb_release -si)"
+fi
+if [ -z "$lsb_dist" ] && [ -r /etc/lsb-release ]; then
+  lsb_dist="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
+fi
+if [ -z "$lsb_dist" ] && [ -r /etc/debian_version ]; then
+  lsb_dist='debian'
+fi
+lsb_dist="$(echo "$lsb_dist" | tr '[:upper:]' '[:lower:]')"
+
+
+# install debian packages dependencies
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install ${lsb_dist} packages dependencies...${COLOR_END}"
+
+
+case "$lsb_dist" in
+  ubuntu)
+    if command -v lsb_release > /dev/null 2>&1; then
+      dist_version="$(lsb_release --codename | cut -f2)"
+    fi
+    if [ -z "$dist_version" ] && [ -r /etc/lsb-release ]; then
+      dist_version="$(. /etc/lsb-release && echo "$DISTRIB_CODENAME")"
+    fi
+
+    echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${dist_version} main" > "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${dist_version}.list"
+    echo "deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${dist_version} main" >> "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${dist_version}.list"
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1E9377A2BA9EF27F
+  ;;
+
+  debian)
+    dist_version="$(cat /etc/debian_version | sed 's/\/.*//' | sed 's/\..*//')"
+    case "$dist_version" in
+      9)
+        dist_version="stretch"
+      ;;
+      8)
+        dist_version="jessie"
+      ;;
+      7)
+        dist_version="wheezy"
+      ;;
+    esac
+  ;;
+esac
+
+
+set -e
+
+apt-get update > /dev/null
+apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git gcc-"$GCC_VERSION" g++-"$GCC_VERSION" gdb python openssl jq > /dev/null
 
 # install nodejs in required version
 if [[ $(node --version) != "v$NODE_VERSION" ]]; then
@@ -32,10 +77,11 @@ fi
 
 npm cache clean --force > /dev/null
 
-npm config set progress false
-npm config set strict-ssl false
+npm config set progress false > /dev/null
+npm config set strict-ssl false > /dev/null
 
-npm i -g @testim/testim-cli
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install testim cli...${COLOR_END}"
+npm install -g @testim/testim-cli > /dev/null
 
 # check if pm2 binary is accessible in $PATH
 set +e
