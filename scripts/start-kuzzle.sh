@@ -36,6 +36,9 @@ do
 
     docker inspect "kuzzle_${i}" &>/dev/null && sh -c "docker kill kuzzle_${i} || true" && sh -c "docker rm -vf kuzzle_${i} || true"
 
+    # ensure that the proxy is started
+    sleep 15
+
     docker run --network="bridge" \
                --detach \
                --name "kuzzle_${i}" \

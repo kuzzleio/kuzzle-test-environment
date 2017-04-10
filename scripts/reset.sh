@@ -24,9 +24,6 @@ bash -c "$SCRIPT_DIR/install-services.sh"
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle proxy instance ...${COLOR_END}"
 bash -c "$SCRIPT_DIR/start-proxy.sh"
 
-# wait proxy to be restarted
-sleep 15
-
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle instance ...${COLOR_END}"
 bash -c "$SCRIPT_DIR/start-kuzzle.sh"
 
