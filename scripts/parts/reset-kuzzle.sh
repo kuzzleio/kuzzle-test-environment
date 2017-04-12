@@ -13,6 +13,13 @@ echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Reset kuzzle environment 
 
 docker exec -ti kuzzle_1 ./bin/kuzzle reset --noint &>/dev/null
 
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle proxy instance ...${COLOR_END}"
+docker exec -ti "proxy" pm2 stop all &>/dev/null
+docker exec -ti "proxy" pm2 flush &>/dev/null
+docker exec -ti "proxy" pm2 start all &>/dev/null
+
+sleep 10
+
 for i in $(seq 1 ${KUZZLE_NODES:-1});
 do
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle ${i}/${KUZZLE_NODES} instance ...${COLOR_END}"

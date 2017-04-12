@@ -21,8 +21,8 @@ env:
     - NODE_VERSION: 6.9.5
     - GLOBAL_PM2_VERSION: 2.0.19
     - GCC_VERSION: 4.9
-    - ES_VERSION: 5
-    - REDIS_VERSION: 3
+    - ES_VERSION: 5.1
+    - REDIS_VERSION: 3.2
     - NODE_ENV: "development"
     - DEBUG: "kuzzle*"
   matrix:

@@ -51,17 +51,49 @@ pushd "${SANDBOX_DIR}" > /dev/null
 
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...${COLOR_END}"
 
-  # insall and start proxy in a background process
-  bash -c "${SCRIPT_DIR}/parts/install-proxy.sh && ${SCRIPT_DIR}/parts/start-proxy.sh" &
+  PIDS=""
+  RESULT=""
 
-  # insall and start kuzzle nodes in a background process
-  bash -c "${SCRIPT_DIR}/parts/install-kuzzle.sh && ${SCRIPT_DIR}/parts/start-kuzzle.sh" &
+  bash -c "${SCRIPT_DIR}/parts/install-proxy.sh" &
+  PIDS="$PIDS $!"
 
-  # insall and start kuzzle nodes in a background process
-  bash -c "${SCRIPT_DIR}/parts/install-backoffice.sh && ${SCRIPT_DIR}/parts/start-backoffice.sh" &
+  bash -c "${SCRIPT_DIR}/parts/install-kuzzle.sh" &
+  PIDS="$PIDS $!"
+
+  bash -c "${SCRIPT_DIR}/parts/install-backoffice.sh" &
+  PIDS="$PIDS $!"
+
+  for PID in $PIDS; do
+      wait $PID || let "RESULT=1"
+  done
+
+  if [ "$RESULT" == "1" ];
+      then
+         exit 1
+  fi
+
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start projects...${COLOR_END}"
+
+  bash -c "${SCRIPT_DIR}/parts/start-proxy.sh"
+
+  PIDS=""
+  RESULT=""
+
+  bash -c "${SCRIPT_DIR}/parts/start-kuzzle.sh" &
+  PIDS="$PIDS $!"
+
+  bash -c "${SCRIPT_DIR}/parts/start-backoffice.sh" &
+  PIDS="$PIDS $!"
+
+  for PID in $PIDS; do
+      wait $PID || let "RESULT=1"
+  done
+
+  if [ "$RESULT" == "1" ];
+      then
+         exit 1
+  fi
 popd > /dev/null
-
-sleep 300
 
 echo -e
 

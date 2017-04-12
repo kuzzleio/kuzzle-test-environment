@@ -7,6 +7,9 @@
     }
   },
   "plugins": {
+    "kuzzle-plugin-cluster": {
+      "privileged": true
+    },
     "kuzzle-plugin-logger": {
       "threads": 0,
       "services": {
