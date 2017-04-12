@@ -10,6 +10,7 @@ after_script: sudo ./scripts/upload-matrix.sh
 os: linux
 sudo: required
 dist: trusty
+language: generic
 
 matrix:
   fast_finish: true
