@@ -14,7 +14,7 @@ matrix:
   fast_finish: true
   allow_failures:
     # nightly open source version
-    - env: ALLOW_FAILURE=true KUZZLE_REPO=kuzzleio/kuzzle KUZZLE_VERSION=rc.x KUZZLE_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects@4.x KUZZLE_PLUGINS=kuzzleio/kuzzle-plugin-auth-passport-oauth@3.x:kuzzleio/kuzzle-plugin-auth-passport-local@4.x:kuzzleio/kuzzle-plugin-logger@2.x BACKOFFICE_REPO=kuzzleio/kuzzle-backoffice BACKOFFICE_VERSION=2.x PROXY_REPO=kuzzleio/kuzzle-proxy PROXY_VERSION=rc.x PROXY_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects@4.x PROXY_PLUGINS=kuzzleio/kuzzle-plugin-mqtt@2.x
+    - env: ALLOW_FAILURE=true KUZZLE_REPO=kuzzleio/kuzzle KUZZLE_VERSION=rc.x KUZZLE_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects@3.x KUZZLE_PLUGINS=kuzzleio/kuzzle-plugin-auth-passport-oauth@3.x:kuzzleio/kuzzle-plugin-auth-passport-local@4.x:kuzzleio/kuzzle-plugin-logger@2.x BACKOFFICE_REPO=kuzzleio/kuzzle-backoffice BACKOFFICE_VERSION=2.x PROXY_REPO=kuzzleio/kuzzle-proxy PROXY_VERSION=rc.x PROXY_COMMON_OBJECT_VERSION=kuzzleio/kuzzle-common-objects@3.x PROXY_PLUGINS=kuzzleio/kuzzle-plugin-mqtt@2.x
 
 
 
@@ -76,11 +76,11 @@ env:
     - ALLOW_FAILURE: true
       KUZZLE_REPO: kuzzleio/kuzzle
       KUZZLE_VERSION: rc.x
-      KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@4.x
+      KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@3.x
       KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth@3.x:kuzzleio/kuzzle-plugin-auth-passport-local@4.x:kuzzleio/kuzzle-plugin-logger@2.x
       BACKOFFICE_REPO: kuzzleio/kuzzle-backoffice
       BACKOFFICE_VERSION: 2.x
       PROXY_REPO: kuzzleio/kuzzle-proxy
       PROXY_VERSION: rc.x
-      PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@4.x
+      PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects@3.x
       PROXY_PLUGINS: kuzzleio/kuzzle-plugin-mqtt@2.x
