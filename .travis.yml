@@ -1,7 +1,6 @@
 before_install: sudo ./scripts/prepare-system.sh
 
-before_script: sudo ./scripts/install-sandbox.sh
-script: sudo ./scripts/run-tests.sh
+script: sudo ./scripts/install-sandbox.sh && sudo ./scripts/run-tests.sh
 after_script: sudo ./scripts/upload-matrix.sh
 
 after_failure: sudo ./scripts/dump-errors.sh
