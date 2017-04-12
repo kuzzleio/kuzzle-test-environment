@@ -33,9 +33,9 @@ pushd "${SANDBOX_DIR}" &>/dev/null
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle-proxy tests...$COLOR_END"
 
     if [[ $(npm run | grep functional-testing) ]]; then
-      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle-proxy functional tests...$COLOR_END"
+      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       npm run functional-testing
 
@@ -51,9 +51,9 @@ pushd "${SANDBOX_DIR}" &>/dev/null
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle tests...$COLOR_END"
 
     if [[ $(npm run | grep functional-testing) ]]; then
-      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle functional tests...$COLOR_END"
+      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       npm run functional-testing
 
@@ -65,12 +65,12 @@ pushd "${SANDBOX_DIR}" &>/dev/null
 
   # run e2e kuzzle-backoffice tests with chrome & firefox
   pushd kuzzle-backoffice &>/dev/null
-    bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
     if [[ "${TESTIM_PROJECT}" == "" ]] || [[ "${TESTIM_TOKEN}" == "" ]]; then
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Skipping backoffice tests, you need to define TESTIM_PROJECT and TESTIM_TOKEN environment variables.$COLOR_END"
     else
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle backoffice tests (chrome)...$COLOR_END"
+      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       docker inspect "testim" &>/dev/null && sh -c "docker kill testim || true" && sh -c "docker rm -vf testim || true"
 
@@ -85,12 +85,11 @@ pushd "${SANDBOX_DIR}" &>/dev/null
         -e "TESTIM_TOKEN=${TESTIM_TOKEN}" \
         -e "BROWSER=chrome" \
         -ti \
-        tests/kuzzle-base \
+        tests/kuzzle-base:raw \
           bash -c 'chmod 755 /opt/run-test.sh && /opt/run-test.sh'
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle backoffice tests ended (chrome)...$COLOR_END"
-
-      bash -c "${SCRIPT_DIR}/parts/reset.sh"
+      bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle backoffice tests (firefox)...$COLOR_END"
 
@@ -107,7 +106,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
         -e "TESTIM_TOKEN=${TESTIM_TOKEN}" \
         -e "BROWSER=firefox" \
         -ti \
-        tests/kuzzle-base \
+        tests/kuzzle-base:raw \
           bash -c 'chmod 755 /opt/run-test.sh && /opt/run-test.sh'
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle backoffice tests ended (firefox)...$COLOR_END"

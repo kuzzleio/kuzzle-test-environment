@@ -70,6 +70,11 @@ if [[ ! $(docker images -a | grep tests/kuzzle-base) ]]; then
 
   # create base image "tests/kuzzle-base:latest" based on previous container
   docker commit \
+    kuzzle-base \
+    tests/kuzzle-base:raw
+
+  # create base image "tests/kuzzle-base:latest" based on previous container
+  docker commit \
     --change "WORKDIR ${SANDBOX_DIR}/app" \
     kuzzle-base \
     tests/kuzzle-base:latest

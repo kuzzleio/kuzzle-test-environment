@@ -5,9 +5,11 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SANDBOX_DIR="/tmp/sandbox"
+
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle backoffice '${BACKOFFICE_REPO}@${BACKOFFICE_VERSION}' ...${COLOR_END}"
 
-pushd /tmp/sandbox/ > /dev/null
+pushd "${SANDBOX_DIR}" > /dev/null
   if [ -d "kuzzle-backoffice" ]; then
     rm -rf ./kuzzle-backoffice
   fi

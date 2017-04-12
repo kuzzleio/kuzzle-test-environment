@@ -38,8 +38,6 @@ get_google_jwt "kuzzle-compatibility-matrix@kuzzle-compatibility-matrix.iam.gser
 spreadsheetId="12ni3IhGVWOh71Didy-sRh4CXZ9Spijxyxbiho-5vPo4"
 spreadsheetSheet="Sheet1"
 
-set -x
-
 # spreadsheet columns:
 # - Build date
 build_date=$(date +%s)
@@ -140,8 +138,8 @@ npm_version=$(npm --version)
 python_version=$(python --version 2>&1)
 # - pm2 version (called twice to ensure that daemon is running)
 pm2_version=
-# pm2_version=$(DEBUG= pm2 --version)
-# pm2_version=$(DEBUG= pm2 --version)
+DEBUG= pm2 --version
+pm2_version=$(DEBUG= pm2 --version)
 # - os version
 os_version=$(lsb_release -d 2> /dev/null | sed 's/:\t/:/' | cut -d ':' -f 2-)
 # - kernel version
@@ -153,11 +151,6 @@ docker_version=$(docker -v)
 
 data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$backoffice_sdk_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
 
-set +x
 
 echo -e "${COLOR_BLUE}Uploading tests result to kuzzle compatibility matrix${COLOR_END}"
 curl --silent -H "content-type: application/json" -H "Authorization: Bearer $access_token" -X POST "https://sheets.googleapis.com/v4/spreadsheets/$spreadsheetId/values/$spreadsheetSheet:append?valueInputOption=RAW" -d "$data" > /dev/null
-
-set -x
-#?
-DEBUG= pm2 --version

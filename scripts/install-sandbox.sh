@@ -75,24 +75,8 @@ pushd "${SANDBOX_DIR}" > /dev/null
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start projects...${COLOR_END}"
 
   bash -c "${SCRIPT_DIR}/parts/start-proxy.sh"
-
-  PIDS=""
-  RESULT=""
-
-  bash -c "${SCRIPT_DIR}/parts/start-kuzzle.sh" &
-  PIDS="$PIDS $!"
-
-  bash -c "${SCRIPT_DIR}/parts/start-backoffice.sh" &
-  PIDS="$PIDS $!"
-
-  for PID in $PIDS; do
-      wait $PID || let "RESULT=1"
-  done
-
-  if [ "$RESULT" == "1" ];
-      then
-         exit 1
-  fi
+  bash -c "${SCRIPT_DIR}/parts/start-kuzzle.sh"
+  bash -c "${SCRIPT_DIR}/parts/start-backoffice.sh"
 popd > /dev/null
 
 echo -e
