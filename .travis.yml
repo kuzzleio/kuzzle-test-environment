@@ -1,9 +1,8 @@
-before_install: sudo ./scripts/pre-install.sh
+before_install: sudo ./scripts/prepare-system.sh
 
-script: sudo ./scripts/install.sh && sudo ./scripts/run.sh
+script: sudo ./scripts/install-sandbox.sh && sudo ./scripts/run-tests.sh
 
-after_success: sudo ./scripts/success.sh
-after_failure: sudo ./scripts/errored.sh
+after_failure: sudo ./scripts/dump-errors.sh
 
 after_script: sudo ./scripts/upload-matrix.sh
 

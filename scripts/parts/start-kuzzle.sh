@@ -4,6 +4,8 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SANDBOX_DIR="/tmp/sandbox"
+
 export kuzzle_services__db__host=elasticsearch
 export kuzzle_services__internalCache__node__host=redis
 export kuzzle_services__memoryStorage__node__host=redis
@@ -36,16 +38,13 @@ do
 
     docker inspect "kuzzle_${i}" &>/dev/null && sh -c "docker kill kuzzle_${i} || true" && sh -c "docker rm -vf kuzzle_${i} || true"
 
-    # ?
-    sleep 15
-
     docker run --network="bridge" \
                --detach \
                --name "kuzzle_${i}" \
                --link "proxy:proxy" \
                --link "elasticsearch:elasticsearch" \
                --link "redis:redis" \
-               --volume "/tmp/sandbox/kuzzle:/tmp/sandbox/app" \
+               --volume "${SANDBOX_DIR}/kuzzle:${SANDBOX_DIR}/app" \
                -e "DEBUG=$DEBUG" \
                -e "NODE_ENV=$NODE_ENV" \
                ${opt} \

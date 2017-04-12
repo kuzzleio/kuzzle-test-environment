@@ -1,20 +1,21 @@
 #!/bin/bash
 
-if [[ "$TRAVIS_BRANCH" != "master" ]]; then
-  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test branch must be master)${COLOR_END}"
-  exit 0
-fi
-
-if [[ "$ALLOW_FAILURE" == "true" ]]; then
-  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test allowed to fail)${COLOR_END}"
-  exit 0
-fi
-
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 
+SANDBOX_DIR="/tmp/sandbox"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [[ "${TRAVIS_BRANCH}" != "master" ]]; then
+  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test branch must be master)${COLOR_END}"
+  exit 0
+fi
+
+if [[ "${ALLOW_FAILURE}" == "true" ]]; then
+  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test allowed to fail)${COLOR_END}"
+  exit 0
+fi
 
 get_google_jwt () {
   local jwt_header=`echo -n '{"alg":"RS256","typ":"JWT"}' | openssl base64 -e | tr -d '\n' | tr -d '=' | tr '/+' '_-'`
@@ -31,7 +32,7 @@ get_google_jwt () {
   "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=$jwt_header.$jwt_claim.$jwt_sign" | jq -r '.access_token')
 }
 
-get_google_jwt "kuzzle-compatibility-matrix@kuzzle-compatibility-matrix.iam.gserviceaccount.com" $SCRIPT_DIR/google.pem
+get_google_jwt "kuzzle-compatibility-matrix@kuzzle-compatibility-matrix.iam.gserviceaccount.com" $SCRIPT_DIR/utils/google.pem
 #echo $access_token
 
 spreadsheetId="12ni3IhGVWOh71Didy-sRh4CXZ9Spijxyxbiho-5vPo4"
@@ -49,16 +50,16 @@ job_id=$TRAVIS_JOB_ID
 # - Travis status
 build_status=$TRAVIS_TEST_RESULT
 # - kuzzle repository
-kuzzle_repository=$(cat /tmp/sandbox/kuzzle/package.json | jq -r ".repository.url")
+kuzzle_repository=$(cat ${SANDBOX_DIR}/kuzzle/package.json | jq -r ".repository.url")
 # - kuzzle branch
-kuzzle_branch=$(cd /tmp/sandbox/kuzzle/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
+kuzzle_branch=$(cd ${SANDBOX_DIR}/kuzzle/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - kuzzle version
-kuzzle_version=$(cat /tmp/sandbox/kuzzle/package.json | jq -r ".version")
+kuzzle_version=$(cat ${SANDBOX_DIR}/kuzzle/package.json | jq -r ".version")
 # - kuzzle plugins
 declare -a kuzzle_plugins
 
-if [ -d "/tmp/sandbox/kuzzle/plugins/enabled/" ]; then
-  pushd /tmp/sandbox/kuzzle/plugins/enabled/ > /dev/null
+if [ -d "${SANDBOX_DIR}/kuzzle/plugins/enabled/" ]; then
+  pushd ${SANDBOX_DIR}/kuzzle/plugins/enabled/ > /dev/null
     for PLUGIN in ./*; do
       if [ -d "${PLUGIN}" ]; then
         pushd "${PLUGIN}" > /dev/null
@@ -75,16 +76,16 @@ kuzzle_plugins=$(IFS="|"; echo "${kuzzle_plugins[*]}")
 kuzzle_plugins=${kuzzle_plugins//|/"\n"}
 
 # - proxy repository
-proxy_repository=$(cat /tmp/sandbox/kuzzle-proxy/package.json | jq -r ".repository.url")
+proxy_repository=$(cat ${SANDBOX_DIR}/kuzzle-proxy/package.json | jq -r ".repository.url")
 # - proxy branch
-proxy_branch=$(cd /tmp/sandbox/kuzzle-proxy/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
+proxy_branch=$(cd ${SANDBOX_DIR}/kuzzle-proxy/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - proxy version
-proxy_version=$(cat /tmp/sandbox/kuzzle-proxy/package.json | jq -r ".version")
+proxy_version=$(cat ${SANDBOX_DIR}/kuzzle-proxy/package.json | jq -r ".version")
 # - proxy plugins
 declare -a proxy_plugins
 
-if [ -d "/tmp/sandbox/kuzzle-proxy/plugins/enabled/" ]; then
-  pushd /tmp/sandbox/kuzzle-proxy/plugins/enabled/ > /dev/null
+if [ -d "${SANDBOX_DIR}/kuzzle-proxy/plugins/enabled/" ]; then
+  pushd ${SANDBOX_DIR}/kuzzle-proxy/plugins/enabled/ > /dev/null
     for PLUGIN in ./*; do
       if [ -d "${PLUGIN}" ]; then
         pushd "${PLUGIN}" > /dev/null
@@ -101,28 +102,28 @@ proxy_plugins=$(IFS="|"; echo "${proxy_plugins[*]}")
 proxy_plugins=${proxy_plugins//|/"\n"}
 
 # - backoffice repository
-backoffice_repository=$(cat /tmp/sandbox/kuzzle-backoffice/package.json | jq -r ".repository.url")
+backoffice_repository=$(cat ${SANDBOX_DIR}/kuzzle-backoffice/package.json | jq -r ".repository.url")
 # - backoffice branch
-backoffice_branch=$(cd /tmp/sandbox/kuzzle-backoffice/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
+backoffice_branch=$(cd ${SANDBOX_DIR}/kuzzle-backoffice/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - backoffice version
-backoffice_version=$(cat /tmp/sandbox/kuzzle-backoffice/package.json | jq -r ".version")
+backoffice_version=$(cat ${SANDBOX_DIR}/kuzzle-backoffice/package.json | jq -r ".version")
 # - backoffice embeded sdk version
-backoffice_sdk_version=$(cat /tmp/sandbox/kuzzle-backoffice/node_modules/kuzzle-sdk/package.json | jq -r ".version")
+backoffice_sdk_version=$(cat ${SANDBOX_DIR}/kuzzle-backoffice/node_modules/kuzzle-sdk/package.json | jq -r ".version")
 # - entreprise version ?
 is_entreprise=$(echo $proxy_repository | grep "load-balancer" | wc -l)
 # - load balancer version
 load_balancer_version=
 if [ "$is_entreprise" -eq "1" ]; then
   load_balancer_version="$proxy_version ($proxy_branch)"
-  proxy_repository=$(cat /tmp/sandbox/kuzzle-proxy/node_modules/kuzzle-proxy/package.json | jq -r ".repository.url")
+  proxy_repository=$(cat ${SANDBOX_DIR}/kuzzle-proxy/node_modules/kuzzle-proxy/package.json | jq -r ".repository.url")
   proxy_branch=
-  proxy_version=$(cat /tmp/sandbox/kuzzle-proxy/node_modules/kuzzle-proxy/package.json | jq -r ".version")
+  proxy_version=$(cat ${SANDBOX_DIR}/kuzzle-proxy/node_modules/kuzzle-proxy/package.json | jq -r ".version")
 fi
 # - cluster plugin version
 cluster_plugin_version=
 if [ "$is_entreprise" -eq "1" ]; then
-  if [ -d "/tmp/sandbox/kuzzle/plugins/enabled/kuzzle-plugin-cluster" ]; then
-    cluster_plugin_version=$(cat /tmp/sandbox/kuzzle/plugins/enabled/kuzzle-plugin-cluster/package.json | jq -r ".version")
+  if [ -d "${SANDBOX_DIR}/kuzzle/plugins/enabled/kuzzle-plugin-cluster" ]; then
+    cluster_plugin_version=$(cat ${SANDBOX_DIR}/kuzzle/plugins/enabled/kuzzle-plugin-cluster/package.json | jq -r ".version")
   else
     cluster_plugin_version="NO CLUSTER MODE"
   fi

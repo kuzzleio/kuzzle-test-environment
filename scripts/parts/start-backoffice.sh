@@ -4,6 +4,8 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SANDBOX_DIR="/tmp/sandbox"
+
 set +e
 while [[ $(docker inspect "proxy" -f "{{ .State.Status }}") != "running" ]];
 do
@@ -20,7 +22,7 @@ docker run --network="bridge" \
            --detach \
            --link "proxy:proxy" \
            --name "backoffice" \
-           --volume "/tmp/sandbox/kuzzle-backoffice:/tmp/sandbox/app" \
+           --volume "${SANDBOX_DIR}/kuzzle-backoffice:${SANDBOX_DIR}/app" \
            --publish "3000:3000" \
            -e "DEBUG=$DEBUG" \
            -e "NODE_ENV=$NODE_ENV" \

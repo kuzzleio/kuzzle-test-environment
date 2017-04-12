@@ -5,9 +5,11 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SANDBOX_DIR="/tmp/sandbox"
+
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle proxy '${PROXY_REPO}@${PROXY_VERSION}' ...${COLOR_END}"
 
-pushd /tmp/sandbox/ > /dev/null
+pushd "${SANDBOX_DIR}" > /dev/null
   if [ -d "kuzzle-proxy" ]; then
     rm -rf ./kuzzle-proxy
   fi

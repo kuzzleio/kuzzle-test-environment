@@ -9,6 +9,12 @@ ELASTIC_PORT=${kuzzle_services__db__port:-9200}
 
 set -e
 
+docker pull elasticsearch:"${ES_VERSION:-latest}"
+docker pull redis:"${REDIS_VERSION:-latest}"
+docker pull selenium/hub
+docker pull testim/node-chrome
+docker pull testim/node-firefox:latest
+
 # run external services through docker (todo: check if needed)
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start elasticsearch service (docker) ...${COLOR_END}";
 docker inspect elasticsearch &>/dev/null && sh -c "docker kill elasticsearch || true" && sh -c "docker rm -vf elasticsearch || true"

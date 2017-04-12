@@ -1,8 +1,22 @@
-#!/bin/bash
+#!/bin/bash#!/bin/bash
+
+#-------------------------------------------------------------------------------
+#
+#   Kuzzle end-to-end test sandbox
+#
+#   Script aim: output all infos to allow bug investigation
+#   - output docker container status
+#   - output proxy infos (container details, logs)
+#   - output kuzzle cores infos (container details, logs)
+#   - output chaos mode logs if enabled
+#
+#-------------------------------------------------------------------------------
 
 COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
+
+SANDBOX_DIR="/tmp/sandbox"
 
 echo -e "${COLOR_BLUE}Tests errored${COLOR_END}"
 
@@ -30,7 +44,7 @@ do
   docker exec -ti "kuzzle_${i}" bash -c "tail -n 100000 /root/.pm2/logs/*"
 done
 
-if [[ -e /tmp/sandbox/chaos_mode.log ]]; then
+if [[ -e "${SANDBOX_DIR}/chaos_mode.log" ]]; then
   echo -e "- ${COLOR_BLUE}chaos mode logs:$COLOR_END"
-  cat /tmp/sandbox/chaos_mode.log
+  cat "${SANDBOX_DIR}/chaos_mode.log"
 fi

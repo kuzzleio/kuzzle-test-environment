@@ -3,6 +3,8 @@ COLOR_END="\e[39m"
 COLOR_BLUE="\e[34m"
 COLOR_YELLOW="\e[33m"
 
+SANDBOX_DIR="/tmp/sandbox"
+
 # get all exported env variables begining with "proxy_"
 vars=($(env | grep -e "^proxy_"));
 opt=" "
@@ -18,13 +20,10 @@ fi
 
 docker inspect "proxy" &>/dev/null && sh -c "docker kill proxy || true" && sh -c "docker rm -vf proxy || true"
 
-# ?
-sleep 15
-
 docker run --network="bridge" \
            --detach \
            --name "proxy" \
-           --volume "/tmp/sandbox/kuzzle-proxy:/tmp/sandbox/app" \
+           --volume "${SANDBOX_DIR}/kuzzle-proxy:${SANDBOX_DIR}/app" \
            --publish "7512:7512" \
            -e "DEBUG=$DEBUG" \
            -e "NODE_ENV=$NODE_ENV" \
