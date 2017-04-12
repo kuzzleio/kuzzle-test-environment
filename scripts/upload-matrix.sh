@@ -53,6 +53,8 @@ kuzzle_repository=$(cat ${SANDBOX_DIR}/kuzzle/package.json | jq -r ".repository.
 kuzzle_branch=$(cd ${SANDBOX_DIR}/kuzzle/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - kuzzle version
 kuzzle_version=$(cat ${SANDBOX_DIR}/kuzzle/package.json | jq -r ".version")
+# - kuzzle common objects version
+kuzzle_common_object_version=$(cat ${SANDBOX_DIR}/kuzzle/node_modules/kuzzle-common-objects/package.json | jq -r ".version")
 # - kuzzle plugins
 declare -a kuzzle_plugins
 
@@ -79,6 +81,8 @@ proxy_repository=$(cat ${SANDBOX_DIR}/kuzzle-proxy/package.json | jq -r ".reposi
 proxy_branch=$(cd ${SANDBOX_DIR}/kuzzle-proxy/ && git branch --no-color --no-column | grep "*" | cut -f2- -d' ')
 # - proxy version
 proxy_version=$(cat ${SANDBOX_DIR}/kuzzle-proxy/package.json | jq -r ".version")
+# - proxy common objects version
+proxy_common_object_version=$(cat ${SANDBOX_DIR}/kuzzle-proxy/node_modules/kuzzle-common-objects/package.json | jq -r ".version")
 # - proxy plugins
 declare -a proxy_plugins
 
@@ -149,7 +153,7 @@ docker_version=$(docker -v)
 
 
 
-data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$backoffice_sdk_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
+data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_common_object_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_common_object_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$backoffice_sdk_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
 
 
 echo -e "${COLOR_BLUE}Uploading tests result to kuzzle compatibility matrix${COLOR_END}"
