@@ -61,7 +61,7 @@ pushd "${SANDBOX_DIR}" > /dev/null
   bash -c "${SCRIPT_DIR}/parts/install-backoffice.sh && ${SCRIPT_DIR}/parts/start-backoffice.sh" &
 popd > /dev/null
 
-sleep 60*5
+sleep 300
 
 echo -e
 

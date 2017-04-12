@@ -22,7 +22,7 @@ bash -c "$SCRIPT_DIR/parts/install-sys-deps.sh"
 
 # install docker
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install docker ...${COLOR_END}"; \
-curl --silent -ksSL https://get.docker.com/ | sh
+bash -c "curl --silent -ksSL https://get.docker.com/ | sh" > /dev/null
 
 # start docker daemon if needed
 docker ps -q || (
