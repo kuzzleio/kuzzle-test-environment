@@ -17,6 +17,7 @@ docker pull testim/node-firefox:latest
 
 # run external services through docker (todo: check if needed)
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start elasticsearch service (docker) ...${COLOR_END}";
+sysctl -w vm.max_map_count=262144
 docker inspect elasticsearch &>/dev/null && sh -c "docker kill elasticsearch || true" && sh -c "docker rm -vf elasticsearch || true"
 docker run --network=bridge --detach --name elasticsearch --publish 9200:9200 elasticsearch:"${ES_VERSION:-latest}"
 
