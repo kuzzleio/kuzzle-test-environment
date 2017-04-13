@@ -1,46 +1,21 @@
 services:
-  - docker
-
+    - docker
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-
-before_install: sudo ./scripts/pre-install.sh
-
-script: sudo ./scripts/install.sh && sudo ./scripts/run.sh
-
-after_success: sudo ./scripts/success.sh
-after_failure: sudo ./scripts/errored.sh
-
-after_script: "echo ENDED"
-
+    apt:
+        sources: [ubuntu-toolchain-r-test]
+before_install: 'sudo ./scripts/pre-install.sh'
+script: 'sudo ./scripts/install.sh && sudo ./scripts/run.sh'
+after_success: 'sudo ./scripts/success.sh'
+after_failure: 'sudo ./scripts/errored.sh'
+after_script: 'echo ENDED'
 os: linux
 sudo: required
-
 env:
-  global:
-    - NODE_VERSION: 6.9.5
-    - GLOBAL_PM2_VERSION: 2.0.19
-    - GCC_VERSION: 4.9
-    - ES_VERSION: 5
-    - REDIS_VERSION: 3
-  matrix:
-    # RC9 version
-    - KUZZLE_REPO: kuzzleio/kuzzle
-      KUZZLE_VERSION: 1.0.0-RC9
-      PROXY_REPO: kuzzleio/kuzzle-proxy
-      PROXY_VERSION: 1.0.0-RC9
-    # RC9.6 version
-    - KUZZLE_REPO: kuzzleio/kuzzle
-      KUZZLE_VERSION: 1.0.0-RC9.6
-      PROXY_REPO: kuzzleio/kuzzle-proxy
-      PROXY_VERSION: 1.0.0-RC9
-    # latest version
-    - KUZZLE_REPO: kuzzleio/kuzzle
-      KUZZLE_VERSION: master
-      KUZZLE_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
-      KUZZLE_PLUGINS: kuzzleio/kuzzle-plugin-auth-passport-oauth:kuzzleio/kuzzle-plugin-auth-passport-local:kuzzleio/kuzzle-plugin-logger
-      PROXY_REPO: kuzzleio/kuzzle-proxy
-      PROXY_VERSION: master
-      PROXY_COMMON_OBJECT_VERSION: kuzzleio/kuzzle-common-objects#master
+    global:
+        - {NODE_VERSION: 6.9.5}
+        - {GLOBAL_PM2_VERSION: 2.0.19}
+        - {GCC_VERSION: 4.9}
+        - {ES_VERSION: 5}
+        - {REDIS_VERSION: 3}
+    matrix:
+        - {KUZZLE_REPO: kuzzleio/kuzzle, KUZZLE_VERSION: 1.0.0-RC9.6, PROXY_REPO: kuzzleio/kuzzle-proxy, PROXY_VERSION: 1.0.0-RC9}
