@@ -5,8 +5,7 @@ COLOR_YELLOW="\e[33m"
 
 SANDBOX_DIR="/tmp/sandbox"
 
-# get all exported env variables begining with "proxy_"
-vars=($(env | grep -e "^proxy_"));
+vars=($PROXY_EXTRA_ENV);
 opt=" "
 for ((i=0; i<${#vars[@]}; ++i));
 do

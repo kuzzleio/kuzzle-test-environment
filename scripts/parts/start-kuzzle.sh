@@ -6,13 +6,12 @@ COLOR_YELLOW="\e[33m"
 
 SANDBOX_DIR="/tmp/sandbox"
 
-export kuzzle_services__db__host=elasticsearch
-export kuzzle_services__internalCache__node__host=redis
-export kuzzle_services__memoryStorage__node__host=redis
-export kuzzle_services__proxyBroker__host=proxy
+KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__db__host=elasticsearch"
+KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__internalCache__node__host=redis"
+KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__memoryStorage__node__host=redis"
+KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__proxyBroker__host=proxy"
 
-# get all exported env variables begining with "kuzzle_"
-vars=($(env | grep -e "^kuzzle_"));
+vars=($KUZZLE_EXTRA_ENV);
 opt=" "
 for ((i=0; i<${#vars[@]}; ++i));
 do
