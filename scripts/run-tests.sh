@@ -37,6 +37,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle-proxy functional tests...$COLOR_END"
       bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
+      echo "PROXY TESTS" > /tmp/sandbox-status
       npm run functional-testing
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle-proxy functional tests ok !$COLOR_END"
@@ -55,6 +56,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Running kuzzle functional tests...$COLOR_END"
       bash -c "${SCRIPT_DIR}/parts/reset-kuzzle.sh"
 
+      echo "KUZZLE TESTS" > /tmp/sandbox-status
       npm run functional-testing
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests functional ok !$COLOR_END"
@@ -74,6 +76,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
 
       docker inspect "testim" &>/dev/null && sh -c "docker kill testim || true" && sh -c "docker rm -vf testim || true"
 
+      echo "BACKOFFICE CHROME TESTS" > /tmp/sandbox-status
       docker run --network="bridge" \
         --name "testim" \
         --link "hub:hub" \
@@ -95,6 +98,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
 
       docker inspect "testim" &>/dev/null && sh -c "docker kill testim || true" && sh -c "docker rm -vf testim || true"
 
+      echo "BACKOFFICE FIREFOX TESTS" > /tmp/sandbox-status
       docker run --network="bridge" \
         --name "testim" \
         --link "hub:hub" \
@@ -113,3 +117,5 @@ pushd "${SANDBOX_DIR}" &>/dev/null
     fi
   popd &>/dev/null
 popd &>/dev/null
+
+echo "SUCCESS" > /tmp/sandbox-status

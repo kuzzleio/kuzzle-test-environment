@@ -50,6 +50,7 @@ pushd "${SANDBOX_DIR}" > /dev/null
   export CC="gcc-${GCC_VERSION}" CXX="g++-${GCC_VERSION}"
 
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install projects...${COLOR_END}"
+  echo "INSTALL PROJECTS" > /tmp/sandbox-status
 
   PIDS=""
   RESULT=""
@@ -74,15 +75,21 @@ pushd "${SANDBOX_DIR}" > /dev/null
 
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start projects...${COLOR_END}"
 
+  echo "START PROXY" > /tmp/sandbox-status
   bash -c "${SCRIPT_DIR}/parts/start-proxy.sh"
   sleep 10
+
+  echo "START KUZZLE" > /tmp/sandbox-status
   bash -c "${SCRIPT_DIR}/parts/start-kuzzle.sh"
+
+  echo "START BACKOFFICE" > /tmp/sandbox-status
   bash -c "${SCRIPT_DIR}/parts/start-backoffice.sh"
 popd > /dev/null
 
 echo -e
 
 # wait for kuzzle to be available to exit
+echo "WAIT KUZZLE AVAILABLE" > /tmp/sandbox-status
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for kuzzle to be available${COLOR_END}"
 while [[ "$(date +%s)" -lt "${TIMEOUT_INSTALL}" ]] && ! curl -f -s -o /dev/null "${SANDBOX_ENDPOINT}"
 do

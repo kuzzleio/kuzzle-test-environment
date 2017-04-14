@@ -46,7 +46,7 @@ build_id=$TRAVIS_BUILD_ID
 # - Travis job ID
 job_id=$TRAVIS_JOB_ID
 # - Travis status
-build_status=$TRAVIS_TEST_RESULT
+build_status=$(cat /tmp/sandbox-status)
 # - kuzzle repository
 kuzzle_repository=$(cat ${SANDBOX_DIR}/kuzzle/package.json | jq -r ".repository.url")
 # - kuzzle branch

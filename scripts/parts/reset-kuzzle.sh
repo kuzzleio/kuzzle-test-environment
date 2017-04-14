@@ -10,6 +10,7 @@ SANDBOX_ENDPOINT="http://localhost:7512/"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Reset kuzzle environment data ...${COLOR_END}"
+echo "RESET KUZZLE DATA" > /tmp/sandbox-status
 
 docker exec -ti kuzzle_1 ./bin/kuzzle reset --noint &>/dev/null
 
