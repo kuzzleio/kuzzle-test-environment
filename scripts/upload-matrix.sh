@@ -12,8 +12,8 @@ if [[ "${TRAVIS_BRANCH}" != "master" ]]; then
   exit 0
 fi
 
-if [[ "${ALLOW_FAILURE}" == "true" ]]; then
-  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test allowed to fail)${COLOR_END}"
+if [[ "${SKIP_MATRIX_REPORT}" == "true" ]]; then
+  echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (env SKIP_MATRIX_REPORT=true)${COLOR_END}"
   exit 0
 fi
 
