@@ -7,6 +7,24 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 # install debian/ubuntu packages dependencies
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install ${LSB_DIST} packages dependencies...${COLOR_END}"
+case "${LSB_DIST}" in
+  ubuntu)
+    # manualy add ubuntu-toolchain-r ppa to get latest g++/gcc compilers
+    echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${DIST_VERSION} main" > "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${DIST_VERSION}.list"
+    echo "deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${DIST_VERSION} main" >> "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${DIST_VERSION}.list"
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1E9377A2BA9EF27F
+
+    apt-get update > /dev/null
+    apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git "gcc-${GCC_VERSION}" g++-"${GCC_VERSION}" gdb python openssl jq > /dev/null
+  ;;
+
+  debian)
+
+    apt-get update > /dev/null
+    apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git "gcc-${GCC_VERSION}" g++-"${GCC_VERSION}" gdb python openssl jq > /dev/null
+  ;;
+esac
+
 
 # install nodejs in required version
 if [[ $(node --version) != "v${NODE_VERSION}" ]]; then
