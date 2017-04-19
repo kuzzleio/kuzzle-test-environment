@@ -1,11 +1,8 @@
 #!/bin/bash
 
-
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-
-SANDBOX_DIR="/tmp/sandbox"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 if [[ "${TRAVIS_BRANCH}" != "master" ]]; then
   echo -e "${COLOR_BLUE}Skipping upload tests result to kuzzle compatibility matrix (test branch must be master)${COLOR_END}"
@@ -40,7 +37,7 @@ spreadsheetSheet="Sheet1"
 
 # spreadsheet columns:
 # - Build date
-build_date=$(date +%s)
+build_date=$(TZ='Europe/Paris' date +"%Y-%m-%d %T")
 # - Travis build ID
 build_id=$TRAVIS_BUILD_ID
 # - Travis job ID
@@ -153,8 +150,8 @@ docker_version=$(docker -v)
 
 
 
-data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'$kuzzle_branch'", "'$kuzzle_version'", "'$kuzzle_common_object_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'$proxy_branch'", "'$proxy_version'", "'$proxy_common_object_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'$backoffice_branch'", "'$backoffice_version'", "'$backoffice_sdk_version'", "'$is_entreprise'", "'$load_balancer_version'", "'$cluster_plugin_version'", "'$elasticsearch_version'", "'$redis_version'", "'$node_version'", "'$npm_version'", "'$python_version'", "'$pm2_version'", "'$os_version'", "'$kernel_version'", "'$docker_version'"]]}'
+data='{"range": "Sheet1", "majorDimension": "ROWS", "values": [["'$build_date'", "'$build_id'", "'$job_id'", "'$build_status'", "'$kuzzle_repository'", "'\'$kuzzle_branch'", "'\'$kuzzle_version'", "'\'$kuzzle_common_object_version'", "'$kuzzle_plugins'", "'$proxy_repository'", "'\'$proxy_branch'", "'\'$proxy_version'", "'\'$proxy_common_object_version'", "'$proxy_plugins'", "'$backoffice_repository'", "'\'$backoffice_branch'", "'\'$backoffice_version'", "'\'$backoffice_sdk_version'", "'$is_entreprise'", "'\'$load_balancer_version'", "'\'$cluster_plugin_version'", "'\'$elasticsearch_version'", "'\'$redis_version'", "'\'$node_version'", "'\'$npm_version'", "'\'$python_version'", "'\'$pm2_version'", "'\'$os_version'", "'\'$kernel_version'", "'\'$docker_version'"]]}'
 
 
 echo -e "${COLOR_BLUE}Uploading tests result to kuzzle compatibility matrix${COLOR_END}"
-curl --silent -H "content-type: application/json" -H "Authorization: Bearer $access_token" -X POST "https://sheets.googleapis.com/v4/spreadsheets/$spreadsheetId/values/$spreadsheetSheet:append?valueInputOption=RAW" -d "$data" > /dev/null
+curl --silent -H "content-type: application/json" -H "Authorization: Bearer $access_token" -X POST "https://sheets.googleapis.com/v4/spreadsheets/$spreadsheetId/values/$spreadsheetSheet:append?valueInputOption=USER_ENTERED" -d "$data" > /dev/null

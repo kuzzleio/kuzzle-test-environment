@@ -1,9 +1,8 @@
 #!/bin/bash
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
 
-SANDBOX_DIR="/tmp/sandbox"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 vars=($PROXY_EXTRA_ENV);
 opt=" "

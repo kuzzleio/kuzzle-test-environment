@@ -1,53 +1,10 @@
 #!/bin/bash
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
-
-LSB_DIST=""
-DIST_VERSION=""
-
-SANDBOX_DIR="/tmp/sandbox"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
+. "$SCRIPT_DIR/utils/vars.sh"
+
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting kuzzle environment installation...${COLOR_END}"
-
-if command -v lsb_release > /dev/null 2>&1; then
-  LSB_DIST="$(lsb_release -si)"
-fi
-if [ -z "${LSB_DIST}" ] && [ -r /etc/lsb-release ]; then
-  LSB_DIST="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
-fi
-if [ -z "${LSB_DIST}" ] && [ -r /etc/debian_version ]; then
-  LSB_DIST='debian'
-fi
-LSB_DIST="$(echo "${LSB_DIST}" | tr '[:upper:]' '[:lower:]')"
-
-case "${LSB_DIST}" in
-  ubuntu)
-    if command -v lsb_release > /dev/null 2>&1; then
-      DIST_VERSION="$(lsb_release --codename | cut -f2)"
-    fi
-    if [ -z "${DIST_VERSION}" ] && [ -r /etc/lsb-release ]; then
-      DIST_VERSION="$(. /etc/lsb-release && echo "${DISTRIB_CODENAME}")"
-    fi
-  ;;
-
-  debian)
-    DIST_VERSION="$(cat /etc/debian_version | sed 's/\/.*//' | sed 's/\..*//')"
-    case "${DIST_VERSION}" in
-      9)
-        DIST_VERSION="stretch"
-      ;;
-      8)
-        DIST_VERSION="jessie"
-      ;;
-      7)
-        DIST_VERSION="wheezy"
-      ;;
-    esac
-  ;;
-esac
 
 if [[ ! $(docker images -a | grep tests/kuzzle-base) ]]; then
   # create container with all dependencies needed to run kuzzle env components

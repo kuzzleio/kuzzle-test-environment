@@ -1,67 +1,12 @@
 #!/bin/bash
+set -e
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-
-LSB_DIST=''
-DIST_VERSION=''
-
-if command -v lsb_release > /dev/null 2>&1; then
-  LSB_DIST="$(lsb_release -si)"
-fi
-if [ -z "${LSB_DIST}" ] && [ -r /etc/lsb-release ]; then
-  LSB_DIST="$(. /etc/lsb-release && echo "${DISTRIB_ID}")"
-fi
-if [ -z "${LSB_DIST}" ] && [ -r /etc/debian_version ]; then
-  LSB_DIST='debian'
-fi
-LSB_DIST="$(echo "$LSB_DIST" | tr '[:upper:]' '[:lower:]')"
-
+. "$SCRIPT_DIR/utils/vars.sh"
 
 # install debian/ubuntu packages dependencies
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install ${LSB_DIST} packages dependencies...${COLOR_END}"
-
-case "${LSB_DIST}" in
-  ubuntu)
-    if command -v lsb_release > /dev/null 2>&1; then
-      DIST_VERSION="$(lsb_release --codename | cut -f2)"
-    fi
-    if [ -z "${DIST_VERSION}" ] && [ -r /etc/lsb-release ]; then
-      DIST_VERSION="$(. /etc/lsb-release && echo "${DISTRIB_CODENAME}")"
-    fi
-
-    # manualy add ubuntu-toolchain-r ppa to get latest g++/gcc compilers
-    echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${DIST_VERSION} main" > "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${DIST_VERSION}.list"
-    echo "deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu ${DIST_VERSION} main" >> "/etc/apt/sources.list.d/ubuntu-toolchain-r-test-${DIST_VERSION}.list"
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1E9377A2BA9EF27F
-
-    apt-get update > /dev/null
-    apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git "gcc-${GCC_VERSION}" g++-"${GCC_VERSION}" gdb python openssl jq > /dev/null
-  ;;
-
-  debian)
-    DIST_VERSION="$(cat /etc/debian_version | sed 's/\/.*//' | sed 's/\..*//')"
-    case "${DIST_VERSION}" in
-      9)
-        DIST_VERSION="stretch"
-      ;;
-      8)
-        DIST_VERSION="jessie"
-      ;;
-      7)
-        DIST_VERSION="wheezy"
-      ;;
-    esac
-
-    apt-get update > /dev/null
-    apt-get install -yqq --no-install-suggests --no-install-recommends --force-yes build-essential curl git "gcc-${GCC_VERSION}" g++-"${GCC_VERSION}" gdb python openssl jq > /dev/null
-  ;;
-esac
-
-
-set -e
 
 # install nodejs in required version
 if [[ $(node --version) != "v${NODE_VERSION}" ]]; then

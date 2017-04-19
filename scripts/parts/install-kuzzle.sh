@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle '${KUZZLE_REPO}@${KUZZLE_VERSION}' ...${COLOR_END}"
 
 
-pushd /tmp/sandbox/ > /dev/null
+pushd "${SANDBOX_DIR}" > /dev/null
   if [ -d "kuzzle" ]; then
     rm -rf ./kuzzle
   fi

@@ -13,16 +13,12 @@
 #-------------------------------------------------------------------------------
 
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 START_INSTALL="$(date +%s)"
 TIMEOUT_INSTALL=$START_INSTALL+60*10
-
-SANDBOX_ENDPOINT="http://localhost:7512/"
-SANDBOX_DIR="/tmp/sandbox"
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 trap kill_process INT
 
@@ -105,6 +101,8 @@ if ! curl -f -s -o /dev/null "${SANDBOX_ENDPOINT}"; then
   exit 1
 else
   echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle available at ${SANDBOX_ENDPOINT}${COLOR_END}"
+
+  echo "KUZZLE STARTED" > /tmp/sandbox-status
 
   exit 0
 fi

@@ -1,11 +1,9 @@
 #!/bin/bash
 set -e
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-SANDBOX_DIR="/tmp/sandbox"
+. "$SCRIPT_DIR/utils/vars.sh"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Downloading kuzzle backoffice '${BACKOFFICE_REPO}@${BACKOFFICE_VERSION}' ...${COLOR_END}"
 

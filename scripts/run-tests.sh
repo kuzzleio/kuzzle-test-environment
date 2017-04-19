@@ -12,14 +12,11 @@
 #
 #-------------------------------------------------------------------------------
 
-set -E
+set -e
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
-
-SANDBOX_DIR="/tmp/sandbox"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Starting functional testing suite...$COLOR_END"
 
@@ -58,6 +55,7 @@ pushd "${SANDBOX_DIR}" &>/dev/null
 
       echo "KUZZLE TESTS" > /tmp/sandbox-status
       npm run functional-testing
+      echo "foo? => $?"
 
       echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}kuzzle tests functional ok !$COLOR_END"
     else

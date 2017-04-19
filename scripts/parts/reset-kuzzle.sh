@@ -1,13 +1,11 @@
 #!/bin/bash
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 START_INSTALL="$(date +%s)"
 TIMEOUT_INSTALL=$START_INSTALL+60*15
-
-SANDBOX_ENDPOINT="http://localhost:7512/"
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Reset kuzzle environment data ...${COLOR_END}"
 echo "RESET KUZZLE DATA" > /tmp/sandbox-status
@@ -21,9 +19,9 @@ docker exec -ti "proxy" pm2 start all &>/dev/null
 
 sleep 10
 
-for i in $(seq 1 ${KUZZLE_NODES:-1});
+for i in $(seq 1 ${KUZZLE_NODES});
 do
-  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle ${i}/${KUZZLE_NODES:-1} instance ...${COLOR_END}"
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Restarting kuzzle ${i}/${KUZZLE_NODES} instance ...${COLOR_END}"
   docker exec -ti "kuzzle_${i}" pm2 stop all &>/dev/null
   docker exec -ti "kuzzle_${i}" pm2 flush &>/dev/null
   docker exec -ti "kuzzle_${i}" pm2 start all &>/dev/null

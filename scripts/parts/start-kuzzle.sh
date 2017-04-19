@@ -1,15 +1,8 @@
 #!/bin/bash
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-SANDBOX_DIR="/tmp/sandbox"
-
-KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__db__host=elasticsearch"
-KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__internalCache__node__host=redis"
-KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__memoryStorage__node__host=redis"
-KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__proxyBroker__host=proxy"
+. "$SCRIPT_DIR/utils/vars.sh"
 
 vars=($KUZZLE_EXTRA_ENV);
 opt=" "

@@ -1,13 +1,9 @@
 #!/bin/bash
 set -e
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-COLOR_YELLOW="\e[33m"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-SANDBOX_DIR="/tmp/sandbox"
-KUZZLE_NODES=${KUZZLE_NODES:-1}
-CHAOS_LOG="${SANDBOX_DIR}/chaos_mode.log"
+. "$SCRIPT_DIR/utils/vars.sh"
 
 echo -n "" > $CHAOS_LOG
 

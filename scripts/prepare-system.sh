@@ -12,10 +12,9 @@
 #
 #-------------------------------------------------------------------------------
 
-COLOR_END="\e[39m"
-COLOR_BLUE="\e[34m"
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+. "$SCRIPT_DIR/utils/vars.sh"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Installing system dependencies${COLOR_END}"
 bash -c "$SCRIPT_DIR/parts/install-sys-deps.sh"
