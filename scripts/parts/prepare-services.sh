@@ -24,16 +24,16 @@ docker run --network=bridge --detach --name redis --publish 6379:6379 redis:"${R
 
 # wait for services to start
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Waiting for elasticsearch to be available${COLOR_END}"
-while ! curl -f -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}"
+while ! curl -f -s -o /dev/null "${ELASTIC_HOST}"
 do
-    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to elasticsearch at http://${ELASTIC_HOST}:${ELASTIC_PORT}${COLOR_END}"
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to elasticsearch at ${ELASTIC_HOST}${COLOR_END}"
     sleep 1
 done
 # create a tmp index just to force the shards to init
-curl -XPUT -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}/%25___tmp"
+curl -XPUT -s -o /dev/null "${ELASTIC_HOST}/%25___tmp"
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Elasticsearch is up. Waiting for shards to be active (can take a while)${COLOR_END}"
-E=$(curl -s "http://${ELASTIC_HOST}:${ELASTIC_PORT}/_cluster/health?wait_for_status=yellow&wait_for_active_shards=1&timeout=60s")
-curl -XDELETE -s -o /dev/null "http://${ELASTIC_HOST}:${ELASTIC_PORT}/%25___tmp"
+E=$(curl -s "${ELASTIC_HOST}/_cluster/health?wait_for_status=yellow&wait_for_active_shards=1&timeout=60s")
+curl -XDELETE -s -o /dev/null "${ELASTIC_HOST}/%25___tmp"
 
 if ! (echo ${E} | grep -E '"status":"(yellow|green)"' > /dev/null); then
     echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Could not connect to elasticsearch in time. Aborting...${COLOR_END}"

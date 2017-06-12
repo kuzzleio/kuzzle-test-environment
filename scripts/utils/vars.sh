@@ -12,15 +12,14 @@ SANDBOX_ENDPOINT="http://localhost:7512/"
 
 KUZZLE_NODES=${KUZZLE_NODES:-1}
 
-KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__db__host=elasticsearch"
+KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__db__client__host=http://elasticsearch:9200"
 KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__internalCache__node__host=redis"
 KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__memoryStorage__node__host=redis"
 KUZZLE_EXTRA_ENV="$KUZZLE_EXTRA_ENV kuzzle_services__proxyBroker__host=proxy"
 
 CHAOS_LOG="${SANDBOX_DIR}/chaos_mode.log"
 
-ELASTIC_HOST=${kuzzle_services__db__host:-localhost}
-ELASTIC_PORT=${kuzzle_services__db__port:-9200}
+ELASTIC_HOST=${kuzzle_services__db__client__host:-"http://elasticsearch:9200"}
 
 if command -v lsb_release > /dev/null 2>&1; then
   LSB_DIST="$(lsb_release -si)"
