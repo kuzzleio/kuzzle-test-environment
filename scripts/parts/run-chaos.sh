@@ -12,8 +12,8 @@ echo "[$(date --rfc-3339 seconds)] - ---- CHAOS MODE STARTED ----" >> $CHAOS_LOG
 
 # enabled only when run-tests.sh script is running
 while [[ $(ps x | grep run-tests.sh | grep bash) ]]; do
-  # wait beetween 5 and 20 seconds
-  sleep $(( RANDOM%17/3*3+5 ))
+  # wait beetween 10 and 30 seconds
+  sleep $(( RANDOM%27/3*3+10 ))
 
   # randomly choose a kuzzle node
   KUZZLE_NODE=$(((RANDOM%KUZZLE_NODES)+1))

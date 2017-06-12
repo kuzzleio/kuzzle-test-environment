@@ -38,6 +38,11 @@ do
                --link "redis:redis" \
                --volume "${SANDBOX_DIR}/kuzzle:${SANDBOX_DIR}/app" \
                -e "DEBUG=$DEBUG" \
+               -e "DEBUG_EXPAND=$DEBUG_EXPAND" \
+               -e "DEBUG_DEPTH=$DEBUG_DEPTH" \
+               -e "DEBUG_MAX_ARRAY_LENGTH=$DEBUG_MAX_ARRAY_LENGTH" \
+               -e "DEBUG_SHOW_HIDDEN=$DEBUG_SHOW_HIDDEN" \
+               -e "DEBUG_COLORS=$DEBUG_COLORS" \
                -e "NODE_ENV=$NODE_ENV" \
                ${opt} \
                tests/kuzzle-base \
