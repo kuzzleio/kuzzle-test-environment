@@ -42,11 +42,14 @@ if [[ $(node --version) != "v${NODE_VERSION}" ]]; then
 fi
 
 # configure npm
+npm install -g npm@5
+npm install -g node-gyp
+
 npm cache clean --force > /dev/null
 
 npm config set progress false > /dev/null
 npm config set strict-ssl false > /dev/null
-
+npm config set unsafe-perm true > /dev/null
 
 # install global npm dependencies
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Install testim cli...${COLOR_END}"

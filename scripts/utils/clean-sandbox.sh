@@ -6,6 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 docker kill $(docker ps -q)
 docker rm -vf $(docker ps -aq)
-docker rmi tests/kuzzle-base
+docker rmi tests/kuzzle-base:latest
+docker rmi tests/kuzzle-base:raw
 
 rm -rf "${SANDBOX_DIR}"
