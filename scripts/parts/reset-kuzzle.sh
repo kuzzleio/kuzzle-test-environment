@@ -23,7 +23,26 @@ do
   docker exec -ti "kuzzle_${i}" pm2 restart all &>/dev/null
 done
 
-sleep 60
+# wait for kuzzle to be available to exit
+echo "WAIT KUZZLE RESTART" > /tmp/sandbox-status
+echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Waiting for kuzzle to be available${COLOR_END}"
+while [[ "$(date +%s)" -lt "${TIMEOUT_INSTALL}" ]] && ! curl -f -s -o /dev/null "${SANDBOX_ENDPOINT}"
+do
+    echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_YELLOW}Still trying to connect to kuzzle at ${SANDBOX_ENDPOINT}${COLOR_END}"
+    sleep 10
+done
+
+if ! curl -f -s -o /dev/null "${SANDBOX_ENDPOINT}"; then
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle installation timed out (> 10min)${COLOR_END}"
+
+  exit 1
+else
+  echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Kuzzle available at ${SANDBOX_ENDPOINT}${COLOR_END}"
+
+  echo "KUZZLE RESTARTED" > /tmp/sandbox-status
+
+  exit 0
+fi
 
 # for i in $(seq 1 ${KUZZLE_NODES:-1});
 # do

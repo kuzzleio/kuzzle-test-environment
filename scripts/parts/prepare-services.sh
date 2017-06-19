@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
 set -e
 
-docker pull elasticsearch:"${ES_VERSION:-latest}"
+docker pull docker.elastic.co/elasticsearch/elasticsearch:"${ES_VERSION:-latest}"
 docker pull redis:"${REDIS_VERSION:-latest}"
 docker pull selenium/hub
 docker pull testim/node-chrome
@@ -16,11 +16,26 @@ docker pull testim/node-firefox:latest
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start elasticsearch service (docker) ...${COLOR_END}";
 sysctl -w vm.max_map_count=262144
 docker inspect elasticsearch &>/dev/null && sh -c "docker kill elasticsearch || true" && sh -c "docker rm -vf elasticsearch || true"
-docker run --network=bridge --detach --name elasticsearch --publish 9200:9200 elasticsearch:"${ES_VERSION:-latest}"
+docker run \
+  --network="bridge" \
+  --detach \
+  --name "elasticsearch" \
+  --publish 9200:9200 \
+  -e "cluster.name=kuzzle" \
+  -e "xpack.security.enabled=false" \
+  -e "xpack.monitoring.enabled=false" \
+  -e "xpack.graph.enabled=false" \
+  -e "xpack.watcher.enabled=false" \
+  docker.elastic.co/elasticsearch/elasticsearch:"${ES_VERSION:-latest}"
 
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Start redis service (docker) ...${COLOR_END}";
 docker inspect redis &>/dev/null && sh -c "docker kill redis || true" && sh -c "docker rm -vf redis || true"
-docker run --network=bridge --detach --name redis --publish 6379:6379 redis:"${REDIS_VERSION:-latest}"
+docker run \
+  --network="bridge" \
+  --detach \
+  --name "redis" \
+  --publish 6379:6379 \
+  redis:"${REDIS_VERSION:-latest}"
 
 # wait for services to start
 echo -e "[$(date --rfc-3339 seconds)] - ${COLOR_BLUE}Waiting for elasticsearch to be available${COLOR_END}"

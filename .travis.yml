@@ -23,11 +23,11 @@ matrix:
 
 env:
   global:
-    - NODE_VERSION: 6.9.5
-    - GLOBAL_PM2_VERSION: 2.0.19
-    - GCC_VERSION: 4.9
-    - ES_VERSION: 5.2
-    - REDIS_VERSION: 3.2
+    - NODE_VERSION: "6.11.0"
+    - GLOBAL_PM2_VERSION: "2.5.0"
+    - GCC_VERSION: "4.9"
+    - ES_VERSION: "5.4.1"
+    - REDIS_VERSION: "3.2.9"
     - NODE_ENV: "development"
     - DEBUG: "kuzzle*"
     # default values
